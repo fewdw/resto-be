@@ -31,12 +31,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        String id = (String) oAuth2User.getAttributes().get("sub");
         String email = (String) oAuth2User.getAttributes().get("email");
         String name = (String) oAuth2User.getAttributes().get("name");
         String picture = (String) oAuth2User.getAttributes().get("picture");
 
         if (!userService.userExists(email)) {
-            User newUser = new User(email, name, picture, LocalDate.now());
+            User newUser = new User(id, email, name, picture, LocalDate.now());
             userService.addUser(newUser);
         }
 

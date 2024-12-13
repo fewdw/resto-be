@@ -16,10 +16,7 @@ import java.time.LocalDate;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String username;
+    private String id;
 
     private String email;
 
@@ -30,7 +27,8 @@ public class User {
     @Column(name = "created_at")
     private LocalDate createdAt;
 
-    public User(String email, String name, String picture, LocalDate createdAt) {
+    public User(String id,String email, String name, String picture, LocalDate createdAt) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.picture = picture;

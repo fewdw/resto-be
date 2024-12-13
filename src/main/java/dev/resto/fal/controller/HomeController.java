@@ -1,5 +1,6 @@
 package dev.resto.fal.controller;
 
+import dev.resto.fal.util.OauthUsername;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +17,8 @@ public class HomeController {
     @GetMapping("/secured")
     public String secured(@AuthenticationPrincipal OAuth2User principal) {
 
-
-
-        return "Hello, Secured!";
+        //return "Hello, " + principal.getAttribute("name") + "!";
+        return OauthUsername.getId(principal);
     }
 
 }
