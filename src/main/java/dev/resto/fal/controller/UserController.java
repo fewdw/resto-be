@@ -22,4 +22,7 @@ public class UserController {
         NavbarResponse navbarResponse = userService.getNavbar(principal);
         return ResponseEntity.ok(navbarResponse);
     }
+
+    // USER CAN RATE A RESTAURANT USING A TAG.
+
 }

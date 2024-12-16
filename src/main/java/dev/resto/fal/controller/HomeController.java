@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    @GetMapping("/")
+    @GetMapping("/test")
     public String home() {
         return "Hello, Home!";
     }
@@ -20,5 +20,7 @@ public class HomeController {
         //return "Hello, " + principal.getAttribute("name") + "!";
         return OauthUsername.getId(principal);
     }
+
+
 
 }

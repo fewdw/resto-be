@@ -26,5 +26,5 @@ public class UserRatings {
 
     private Tag tag;
 
-    private Score score;
+    private boolean rating;
 }
