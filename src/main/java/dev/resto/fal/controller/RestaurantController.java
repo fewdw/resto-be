@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +29,11 @@ public class RestaurantController {
     @GetMapping
     public RestaurantApiInfo addRestaurant(@AuthenticationPrincipal OAuth2User principal, @RequestParam(required = true) String placeId) throws IOException {
         return restaurantService.addRestaurant(placeId, OauthUsername.getId(principal));
+    }
+
+    @GetMapping("/{placeId}")
+    public RestaurantApiInfo getRestaurant(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String placeId) throws IOException {
+        return restaurantService.getRestaurant(placeId, OauthUsername.getId(principal));
     }
 
 }

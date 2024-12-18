@@ -19,4 +19,5 @@ public class RestaurantApiInfo {
     private String formattedPhoneNumber;
     private String photoUrl;
     private List<String> weekdayText;
+
 }

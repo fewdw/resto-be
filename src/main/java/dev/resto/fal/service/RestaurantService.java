@@ -41,11 +41,9 @@ public class RestaurantService {
 
         RestaurantApiInfo restaurantApiInfo = restaurantApiClient.getRestaurantInfo(placeId);
 
-
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new RuntimeException("User not found")
         );
-
 
         String s3ImageUrl = bucketService.putObjectIntoBucket(restaurantApiInfo.getPhotoUrl(), restaurantApiInfo.getPlaceId());
 
@@ -63,6 +61,24 @@ public class RestaurantService {
 
         restaurantRepository.save(newRestaurant);
         return restaurantApiInfo;
+    }
+
+    public RestaurantApiInfo getRestaurant(String placeId, String id) {
+
+        Restaurant restaurant = restaurantRepository.findByPlaceId(placeId).orElseThrow(
+                () -> new RuntimeException("Restaurant not found")
+        );
+
+        return new RestaurantApiInfo(
+                restaurant.getName(),
+                restaurant.getAddress(),
+                restaurant.getPlaceId(),
+                restaurant.getLink(),
+                restaurant.getWebsite(),
+                restaurant.getPhoneNumber(),
+                restaurant.getPhotoUrl(),
+                restaurant.getWeekdayText()
+        );
     }
 
 }

@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserRatingService {
@@ -28,7 +30,6 @@ public class UserRatingService {
 
     public ResponseEntity<String> leaveRating(String userId, RatingRequest ratingRequest) {
 
-        // Fetching and validating user, restaurant, and tag
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Restaurant restaurant = restaurantRepository.findByPlaceId(ratingRequest.getPlaceId())
@@ -81,4 +82,17 @@ public class UserRatingService {
         restaurantRatingRepository.save(restaurantRating);
     }
 
+    public List<Tag> getUserTags(String placeId, String userId) {
+        Restaurant restaurant = restaurantRepository.findByPlaceId(placeId)
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+
+        List<UserRating> userRatings = userRatingRepository.findAllByUserAndRestaurant(
+                userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")),
+                restaurant
+        );
+
+        return userRatings.stream()
+                .map(UserRating::getTag)
+                .toList();
+    }
 }
