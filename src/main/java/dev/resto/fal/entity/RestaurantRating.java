@@ -21,8 +21,16 @@ public class RestaurantRating {
     private Restaurant restaurant;
 
     @Enumerated(EnumType.STRING)
-    private Tag tag;
+    private TagType tagType;
+
+    private String tagName;
 
     private int votes;
 
+    public RestaurantRating(Restaurant restaurant, TagType tagType, String tagName, int votes) {
+        this.restaurant = restaurant;
+        this.tagType = tagType;
+        this.tagName = tagName;
+        this.votes = votes;
+    }
 }

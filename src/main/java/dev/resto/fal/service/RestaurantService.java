@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -25,11 +26,15 @@ public class RestaurantService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<RestaurantSearch> searchRestaurants(String query) {
+    @Autowired
+    private BucketService bucketService;
+
+    public List<RestaurantSearch> searchRestaurants(String query, String userId) {
         return restaurantApiClient.searchRestaurants(query);
     }
 
-    public RestaurantApiInfo addRestaurant(String placeId, String userId) {
+    public RestaurantApiInfo addRestaurant(String placeId, String userId) throws IOException {
+
         if(restaurantRepository.existsByPlaceId(placeId)){
             throw new RuntimeException("Restaurant already exists");
         }
@@ -41,6 +46,9 @@ public class RestaurantService {
                 () -> new RuntimeException("User not found")
         );
 
+
+        String s3ImageUrl = bucketService.putObjectIntoBucket(restaurantApiInfo.getPhotoUrl(), restaurantApiInfo.getPlaceId());
+
         Restaurant newRestaurant = new Restaurant(
                 restaurantApiInfo.getPlaceId(),
                 restaurantApiInfo.getName(),
@@ -48,17 +56,13 @@ public class RestaurantService {
                 restaurantApiInfo.getUrl(),
                 restaurantApiInfo.getWebsite(),
                 restaurantApiInfo.getFormattedPhoneNumber(),
-                restaurantApiInfo.getPhotoUrl(),
+                s3ImageUrl,
                 restaurantApiInfo.getWeekdayText(),
                 user
         );
-        newRestaurant = restaurantRepository.save(newRestaurant);
 
+        restaurantRepository.save(newRestaurant);
         return restaurantApiInfo;
-        // make api request to get info
-        // store the photo in s3
-        // save it to db
-        //return null;
     }
 
 }

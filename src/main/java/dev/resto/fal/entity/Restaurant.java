@@ -42,9 +42,6 @@ public class Restaurant {
     @Column(name = "weekday", length = 512)
     private List<String> weekdayText;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RestaurantRating> ratings = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "added_by", referencedColumnName = "id")
     private User user;

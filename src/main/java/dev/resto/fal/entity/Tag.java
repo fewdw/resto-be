@@ -1,82 +1,31 @@
 package dev.resto.fal.entity;
 
-public enum Tag {
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-        // Ambiance
-        COZY,
-        ROMANTIC,
-        LUXURIOUS,
-        CASUAL,
-        FAMILY_FRIENDLY,
-        MODERN,
-        RUSTIC,
-        TRENDY,
-        HISTORIC,
-        QUIET,
-        LIVELY,
+@Entity
+@Table
+@Getter
+@NoArgsConstructor
+@Setter
+public class Tag {
 
-        // Cuisine
-        ITALIAN,
-        CHINESE,
-        JAPANESE,
-        INDIAN,
-        MEXICAN,
-        FRENCH,
-        THAI,
-        AMERICAN,
-        MEDITERRANEAN,
-        KOREAN,
-        VEGAN,
-        VEGETARIAN,
-        SEAFOOD,
-        BBQ,
-        FAST_FOOD,
-        DESSERTS,
-        COFFEE,
-        BAKERY,
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-        // Occasions
-        DATE_NIGHT,
-        BUSINESS_MEETING,
-        FAMILY_GATHERING,
-        CELEBRATION,
-        CASUAL_DINING,
-        QUICK_BITE,
-        SOLO_DINING,
+    @Column(unique = true, nullable = false)
+    private String name;
 
-        // Amenities
-        OUTDOOR_SEATING,
-        FAST_WIFI,
-        PET_FRIENDLY,
-        WHEELCHAIR_ACCESSIBLE,
-        PARKING_AVAILABLE,
-        LIVE_MUSIC,
-        KID_FRIENDLY,
-        PRIVATE_ROOMS,
-        BUFFET,
-        BYOB,
-        DELIVERY,
-        TAKEAWAY,
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TagType type;
 
-        // Special Features
-        HALAL,
-        KOSHER,
-        GLUTEN_FREE,
-        ORGANIC,
-        LOCALLY_SOURCED,
-        FARM_TO_TABLE,
-        ALL_YOU_CAN_EAT,
-        LATE_NIGHT,
-
-        // Location
-        DOWNTOWN,
-        SUBURBAN,
-        ROOFTOP,
-        WATERFRONT,
-
-        // Pricing
-        BUDGET,
-        MID_RANGE,
-        EXPENSIVE
-
+    public Tag(String name, TagType type) {
+        this.name = name;
+        this.type = type;
+    }
 }
