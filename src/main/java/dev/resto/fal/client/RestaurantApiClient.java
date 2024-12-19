@@ -23,7 +23,6 @@ public class RestaurantApiClient {
     private String apiKey;
 
     public List<RestaurantSearch> searchRestaurants(String query) {
-
         String url = String.format("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%s&key=%s", query, apiKey);
 
         return webClientBuilder.build()
@@ -33,9 +32,15 @@ public class RestaurantApiClient {
                 .bodyToMono(Map.class)
                 .map(response -> (List<Map<String, Object>>) response.get("predictions"))
                 .flatMapMany(Flux::fromIterable)
+                .filter(this::hasFoodType) // Filter results that have "food" in types
                 .map(this::mapToRestaurantSearch)
                 .collectList()
                 .block();
+    }
+
+    private boolean hasFoodType(Map<String, Object> prediction) {
+        List<String> types = (List<String>) prediction.get("types");
+        return types != null && types.contains("food");
     }
 
     private RestaurantSearch mapToRestaurantSearch(Map<String, Object> prediction) {
@@ -48,6 +53,7 @@ public class RestaurantApiClient {
 
         return restaurant;
     }
+
 
     public RestaurantApiInfo getRestaurantInfo(String placeId) {
         // Build the URL for the API request using placeId and apiKey

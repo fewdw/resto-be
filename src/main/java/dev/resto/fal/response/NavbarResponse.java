@@ -1,13 +1,11 @@
 package dev.resto.fal.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class NavbarResponse {
     private String name;
     private String profilePicture;

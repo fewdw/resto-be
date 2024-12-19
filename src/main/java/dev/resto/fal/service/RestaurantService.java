@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -56,7 +57,8 @@ public class RestaurantService {
                 restaurantApiInfo.getFormattedPhoneNumber(),
                 s3ImageUrl,
                 restaurantApiInfo.getWeekdayText(),
-                user
+                user,
+                LocalDateTime.now()
         );
 
         restaurantRepository.save(newRestaurant);

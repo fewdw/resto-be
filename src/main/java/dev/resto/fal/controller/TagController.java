@@ -24,8 +24,7 @@ public class TagController {
     @GetMapping
     public List<Tag> getAllTags() {
 
-        // add if DB is empty
-        //addTags();
+        addTags();
 
         return tagService.getAllTags();
     }

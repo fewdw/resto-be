@@ -1,11 +1,10 @@
 package dev.resto.fal.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class Restaurant {
 
     @Id
@@ -46,7 +46,9 @@ public class Restaurant {
     @JoinColumn(name = "added_by", referencedColumnName = "id")
     private User user;
 
-    public Restaurant(String placeId, String name, String address, String link, String website, String phoneNumber, String photoUrl, List<String> weekdayText, User user) {
+    private LocalDateTime dateAdded;
+
+    public Restaurant(String placeId, String name, String address, String link, String website, String phoneNumber, String photoUrl, List<String> weekdayText, User user, LocalDateTime dateAdded) {
         this.placeId = placeId;
         this.name = name;
         this.address = address;
@@ -56,6 +58,7 @@ public class Restaurant {
         this.photoUrl = photoUrl;
         this.weekdayText = weekdayText;
         this.user = user;
+        this.dateAdded = dateAdded;
     }
 
 
