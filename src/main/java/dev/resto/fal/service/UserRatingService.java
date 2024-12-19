@@ -65,7 +65,7 @@ public class UserRatingService {
         userRatingRepository.save(userRating);
 
         RestaurantRating restaurantRating = restaurantRatingRepository.findByRestaurantAndTagName(restaurant, tag.getName())
-                .orElseGet(() -> new RestaurantRating(restaurant, tag.getType(), tag.getName(), 0));
+                .orElseGet(() -> new RestaurantRating(restaurant, tag.getType(), tag.getName(), 0, tag.getEmoji()));
 
         restaurantRating.setVotes(restaurantRating.getVotes() + 1);
         restaurantRatingRepository.save(restaurantRating);
@@ -79,20 +79,13 @@ public class UserRatingService {
                 .orElseThrow(() -> new RuntimeException("Restaurant rating not found"));
 
         restaurantRating.setVotes(restaurantRating.getVotes() - 1);
+
+        if (restaurantRating.getVotes() == 0) {
+            restaurantRatingRepository.delete(restaurantRating);
+            return;
+        }
+
         restaurantRatingRepository.save(restaurantRating);
     }
 
-    public List<Tag> getUserTags(String placeId, String userId) {
-        Restaurant restaurant = restaurantRepository.findByPlaceId(placeId)
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
-
-        List<UserRating> userRatings = userRatingRepository.findAllByUserAndRestaurant(
-                userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")),
-                restaurant
-        );
-
-        return userRatings.stream()
-                .map(UserRating::getTag)
-                .toList();
-    }
 }

@@ -34,6 +34,7 @@ public class RestaurantService {
     @Autowired
     private BucketService bucketService;
 
+
     public List<RestaurantSearch> searchRestaurants(String query, String userId) {
         return restaurantApiClient.searchRestaurants(query);
     }
@@ -95,5 +96,6 @@ public class RestaurantService {
                 restaurant.getWeekdayText()
         );
     }
+
 
 }

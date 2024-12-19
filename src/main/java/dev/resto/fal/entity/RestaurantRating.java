@@ -27,10 +27,13 @@ public class RestaurantRating {
 
     private int votes;
 
-    public RestaurantRating(Restaurant restaurant, TagType tagType, String tagName, int votes) {
+    String emoji;
+
+    public RestaurantRating(Restaurant restaurant, TagType tagType, String tagName, int votes, String emoji) {
         this.restaurant = restaurant;
         this.tagType = tagType;
         this.tagName = tagName;
         this.votes = votes;
+        this.emoji = emoji;
     }
 }

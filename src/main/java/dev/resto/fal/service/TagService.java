@@ -21,6 +21,7 @@ public class TagService {
     }
 
     public Tag addTag(AddTag tag) {
-        return tagRepository.save(new Tag(tag.getName(), tag.getType()));
+        return tagRepository.save(new Tag(tag.getName(), tag.getType(), tag.getEmoji()));
     }
+
 }

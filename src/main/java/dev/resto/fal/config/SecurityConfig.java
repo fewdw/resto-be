@@ -34,7 +34,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/test").permitAll();
+                    auth.requestMatchers("/").permitAll();
+                    auth.requestMatchers("/api/tags").permitAll();
                     auth.requestMatchers("/favicon.ico").permitAll();
                     auth.anyRequest().authenticated();
                 })

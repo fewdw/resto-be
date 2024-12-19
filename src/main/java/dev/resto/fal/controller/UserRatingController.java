@@ -24,10 +24,4 @@ public class UserRatingController {
         return userRatingService.leaveRating(OauthUsername.getId(principal), ratingRequest);
     }
 
-    @GetMapping("/user-tags/{placeId}")
-    public ResponseEntity<List<Tag>> getUserTags(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String placeId){
-        List<Tag> response = userRatingService.getUserTags(placeId, OauthUsername.getId(principal));
-        return ResponseEntity.ok(response);
-    }
-
 }

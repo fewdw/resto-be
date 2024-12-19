@@ -22,4 +22,6 @@ public class AddTag {
     @NotNull(message = "Tag type cannot be null")
     private TagType type;
 
+    private String emoji;
+
 }

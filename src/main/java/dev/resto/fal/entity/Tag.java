@@ -24,8 +24,11 @@ public class Tag {
     @Column(nullable = false)
     private TagType type;
 
-    public Tag(String name, TagType type) {
+    private String emoji;
+
+    public Tag(String name, TagType type, String emoji) {
         this.name = name;
         this.type = type;
+        this.emoji = emoji;
     }
 }

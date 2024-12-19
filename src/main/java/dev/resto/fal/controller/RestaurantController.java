@@ -36,4 +36,9 @@ public class RestaurantController {
         return restaurantService.getRestaurant(placeId, OauthUsername.getId(principal));
     }
 
+    // return restaurants added by the user 20 per page
+    // return recent restaurents all (20 is the max)
+    // return favorite restaurants ( of the user) 20 per page
+    // return favorites of other users (20 per page)
+
 }
