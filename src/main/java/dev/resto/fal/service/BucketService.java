@@ -28,7 +28,6 @@ public class BucketService {
     }
 
     public String putObjectIntoBucket(String imageUrl, String placeId) throws IOException {
-        // Step 1: Download image from the URL
         URL url = new URL(imageUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");

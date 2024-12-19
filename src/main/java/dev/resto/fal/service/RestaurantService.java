@@ -8,6 +8,7 @@ import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
 import dev.resto.fal.response.RestaurantSearch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ import java.util.List;
 
 @Service
 public class RestaurantService {
+
+    @Value("${restaurant.add-limit}")
+    private int restaurantAddLimit;
 
     @Autowired
     private RestaurantRepository restaurantRepository;
@@ -46,6 +50,10 @@ public class RestaurantService {
                 () -> new RuntimeException("User not found")
         );
 
+        if (user.getRestaurantsAdded() >= restaurantAddLimit) {
+            throw new RuntimeException("Restaurant add limit reached");
+        }
+
         String s3ImageUrl = bucketService.putObjectIntoBucket(restaurantApiInfo.getPhotoUrl(), restaurantApiInfo.getPlaceId());
 
         Restaurant newRestaurant = new Restaurant(
@@ -60,6 +68,11 @@ public class RestaurantService {
                 user,
                 LocalDateTime.now()
         );
+
+        restaurantApiInfo.setPhotoUrl(s3ImageUrl);
+
+        user.setRestaurantsAdded(user.getRestaurantsAdded() + 1);
+        userRepository.save(user);
 
         restaurantRepository.save(newRestaurant);
         return restaurantApiInfo;

@@ -37,7 +37,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String picture = (String) oAuth2User.getAttributes().get("picture");
 
         if (!userService.userExists(email)) {
-            User newUser = new User(id, email, name, picture, LocalDate.now());
+            User newUser = new User(id, email, name, picture, LocalDate.now(), 0);
             userService.addUser(newUser);
         }
 

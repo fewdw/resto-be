@@ -38,13 +38,16 @@ public class User {
     )
     private Set<Restaurant> favorites = new HashSet<>();
 
+    private int restaurantsAdded;
 
-    public User(String id,String email, String name, String picture, LocalDate createdAt) {
+
+    public User(String id,String email, String name, String picture, LocalDate createdAt, int restaurantsAdded) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.picture = picture;
         this.createdAt = createdAt;
+        this.restaurantsAdded = restaurantsAdded;
     }
 
 
