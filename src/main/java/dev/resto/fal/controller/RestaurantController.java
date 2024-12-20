@@ -1,7 +1,9 @@
 package dev.resto.fal.controller;
 
-import dev.resto.fal.entity.RestaurantApiInfo;
+import dev.resto.fal.response.RestaurantApiInfo;
+import dev.resto.fal.request.FilterRequest;
 import dev.resto.fal.response.RestaurantSearch;
+import dev.resto.fal.response.RestaurantThumbnail;
 import dev.resto.fal.service.RestaurantService;
 import dev.resto.fal.util.OauthUsername;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +38,10 @@ public class RestaurantController {
         return restaurantService.getRestaurant(placeId, OauthUsername.getId(principal));
     }
 
-    // return restaurants added by the user 20 per page
-    // return recent restaurents all (20 is the max)
-    // return favorite restaurants ( of the user) 20 per page
-    // return favorites of other users (20 per page)
+    @PostMapping("/list")
+    public ResponseEntity<List<RestaurantThumbnail>> getAllRestaurantThumbnails(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterRequest filterRequest){
+        List<RestaurantThumbnail> response = restaurantService.getAllRestaurantThumbnails(OauthUsername.getId(principal), filterRequest);
+        return ResponseEntity.ok(response);
+    }
 
 }

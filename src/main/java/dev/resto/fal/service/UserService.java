@@ -2,7 +2,7 @@ package dev.resto.fal.service;
 
 import dev.resto.fal.entity.FavoriteAction;
 import dev.resto.fal.entity.Restaurant;
-import dev.resto.fal.entity.RestaurantApiInfo;
+import dev.resto.fal.response.RestaurantApiInfo;
 import dev.resto.fal.entity.User;
 import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -82,4 +81,22 @@ public class UserService {
                 .collect(Collectors.toSet());
     }
 
+    public Set<RestaurantApiInfo> getRestaurantsAdded(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        List<Restaurant> restaurants = restaurantRepository.findAllByUser(user);
+
+        return restaurants.stream()
+                .map(restaurant -> new RestaurantApiInfo(
+                        restaurant.getName(),
+                        restaurant.getAddress(),
+                        restaurant.getPlaceId(),
+                        restaurant.getLink(),
+                        restaurant.getWebsite(),
+                        restaurant.getPhoneNumber(),
+                        restaurant.getPhotoUrl(),
+                        restaurant.getWeekdayText()
+                ))
+                .collect(Collectors.toSet());
+    }
 }

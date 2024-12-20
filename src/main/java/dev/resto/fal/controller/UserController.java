@@ -1,7 +1,6 @@
 package dev.resto.fal.controller;
 
-import dev.resto.fal.entity.Restaurant;
-import dev.resto.fal.entity.RestaurantApiInfo;
+import dev.resto.fal.response.RestaurantApiInfo;
 import dev.resto.fal.request.UserFavorite;
 import dev.resto.fal.response.NavbarResponse;
 import dev.resto.fal.service.UserService;
@@ -33,9 +32,28 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    //TODO: add limit of 20
     @GetMapping("/favorites")
     public ResponseEntity<Set<RestaurantApiInfo>> getFavorites(@AuthenticationPrincipal OAuth2User principal) {
         return ResponseEntity.ok(userService.getFavorites(OauthUsername.getId(principal)));
+    }
+
+    //TODO: add limit of 20
+    @GetMapping("/favorites/{userId}")
+    public ResponseEntity<Set<RestaurantApiInfo>> getFavorites(@PathVariable(required = true) String userId) {
+        return ResponseEntity.ok(userService.getFavorites(userId));
+    }
+
+    // get restaurants added by user
+    @GetMapping("/restaurants-added")
+    public ResponseEntity<Set<RestaurantApiInfo>> getRestaurantsAdded(@AuthenticationPrincipal OAuth2User principal) {
+        return ResponseEntity.ok(userService.getRestaurantsAdded(OauthUsername.getId(principal)));
+    }
+
+    // get restaurants added by any user
+    @GetMapping("/restaurants-added/{userId}")
+    public ResponseEntity<Set<RestaurantApiInfo>> getRestaurantsAdded(@PathVariable(required = true) String userId) {
+        return ResponseEntity.ok(userService.getRestaurantsAdded(userId));
     }
 
 }

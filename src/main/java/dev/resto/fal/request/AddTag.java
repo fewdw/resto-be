@@ -1,6 +1,6 @@
 package dev.resto.fal.request;
 
-import dev.resto.fal.entity.TagType;
+import dev.resto.fal.enums.TagType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

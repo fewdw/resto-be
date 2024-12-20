@@ -1,5 +1,6 @@
 package dev.resto.fal.entity;
 
+import dev.resto.fal.enums.TagType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

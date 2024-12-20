@@ -1,8 +1,6 @@
 package dev.resto.fal.controller;
 
 import dev.resto.fal.entity.Tag;
-import dev.resto.fal.entity.TagType;
-import dev.resto.fal.repository.TagRepository;
 import dev.resto.fal.request.AddTag;
 import dev.resto.fal.service.TagService;
 import jakarta.validation.Valid;

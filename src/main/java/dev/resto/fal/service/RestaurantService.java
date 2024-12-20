@@ -2,14 +2,15 @@ package dev.resto.fal.service;
 
 import dev.resto.fal.client.RestaurantApiClient;
 import dev.resto.fal.entity.Restaurant;
-import dev.resto.fal.entity.RestaurantApiInfo;
+import dev.resto.fal.response.RestaurantApiInfo;
 import dev.resto.fal.entity.User;
 import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
+import dev.resto.fal.request.FilterRequest;
 import dev.resto.fal.response.RestaurantSearch;
+import dev.resto.fal.response.RestaurantThumbnail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class RestaurantService {
                 () -> new RuntimeException("User not found")
         );
 
-        if (user.getRestaurantsAdded() >= restaurantAddLimit) {
+        if (user.getNumberOfRestaurantsAdded() >= restaurantAddLimit) {
             throw new RuntimeException("Restaurant add limit reached");
         }
 
@@ -72,7 +73,7 @@ public class RestaurantService {
 
         restaurantApiInfo.setPhotoUrl(s3ImageUrl);
 
-        user.setRestaurantsAdded(user.getRestaurantsAdded() + 1);
+        user.setNumberOfRestaurantsAdded(user.getNumberOfRestaurantsAdded() + 1);
         userRepository.save(user);
 
         restaurantRepository.save(newRestaurant);
@@ -97,5 +98,7 @@ public class RestaurantService {
         );
     }
 
+    public List<RestaurantThumbnail> getAllRestaurantThumbnails(String userId, FilterRequest filterRequest) {
 
+    }
 }

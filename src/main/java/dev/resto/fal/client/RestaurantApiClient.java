@@ -1,6 +1,6 @@
 package dev.resto.fal.client;
 
-import dev.resto.fal.entity.RestaurantApiInfo;
+import dev.resto.fal.response.RestaurantApiInfo;
 import dev.resto.fal.response.RestaurantSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

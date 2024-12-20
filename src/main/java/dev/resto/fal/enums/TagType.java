@@ -1,4 +1,4 @@
-package dev.resto.fal.entity;
+package dev.resto.fal.enums;
 
 public enum TagType {
     AMBIANCE,

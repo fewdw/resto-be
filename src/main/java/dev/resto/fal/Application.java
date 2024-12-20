@@ -1,9 +1,8 @@
 package dev.resto.fal;
 
 import dev.resto.fal.entity.Tag;
-import dev.resto.fal.entity.TagType;
+import dev.resto.fal.enums.TagType;
 import dev.resto.fal.repository.TagRepository;
-import dev.resto.fal.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;

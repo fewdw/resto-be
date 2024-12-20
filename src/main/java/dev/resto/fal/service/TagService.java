@@ -1,10 +1,8 @@
 package dev.resto.fal.service;
 
 import dev.resto.fal.entity.Tag;
-import dev.resto.fal.entity.TagType;
 import dev.resto.fal.repository.TagRepository;
 import dev.resto.fal.request.AddTag;
-import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package dev.resto.fal.entity;
+package dev.resto.fal.response;
 
 import lombok.*;
 
