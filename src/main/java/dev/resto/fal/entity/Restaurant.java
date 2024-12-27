@@ -1,13 +1,15 @@
 package dev.resto.fal.entity;
 
+import dev.resto.fal.response.RestaurantRatingResponse;
+import dev.resto.fal.response.ThumbnailRatingResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "restaurants")
@@ -34,6 +36,8 @@ public class Restaurant {
 
     private String phoneNumber;
 
+    private int numberOfReviews;
+
     @Column(length = 512)
     private String photoUrl;
 
@@ -48,6 +52,21 @@ public class Restaurant {
 
     private LocalDateTime dateAdded;
 
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RestaurantRating> ratings = new HashSet<>();
+
+    public void addRating(RestaurantRating rating) {
+        this.ratings.add(rating);
+    }
+
+    public Set<ThumbnailRatingResponse> getAllTagsFromRatings() {
+        return ratings.stream()
+                .map(ratings -> new ThumbnailRatingResponse(
+                        ratings.getTag(),
+                        ratings.getVotes()
+                )).collect(Collectors.toSet());
+    }
+
     public Restaurant(String placeId, String name, String address, String link, String website, String phoneNumber, String photoUrl, List<String> weekdayText, User user, LocalDateTime dateAdded) {
         this.placeId = placeId;
         this.name = name;
@@ -60,7 +79,4 @@ public class Restaurant {
         this.user = user;
         this.dateAdded = dateAdded;
     }
-
-
-
 }

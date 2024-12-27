@@ -1,6 +1,5 @@
-package dev.resto.fal.request;
+package dev.resto.fal.response;
 
-import dev.resto.fal.enums.FavoriteAction;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserFavorite {
-    FavoriteAction action;
-    String placeId;
+public class UserProfileResponse {
+    private String name;
+    private String email;
+    private String picture;
 }

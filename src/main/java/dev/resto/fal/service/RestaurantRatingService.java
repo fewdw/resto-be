@@ -52,10 +52,9 @@ public class RestaurantRatingService {
 
             restaurantRatingResponse.setId(tag.getId());
             restaurantRatingResponse.setName(tag.getName());
-            restaurantRatingResponse.setType(tag.getType());
-            restaurantRatingResponse.setEmoji(tag.getEmoji());
+            restaurantRatingResponse.setTag(tag);
 
-            int numberOfVotes = restaurantRatings.stream().filter(restaurantRating -> restaurantRating.getTagName().equals(tag.getName())).mapToInt(RestaurantRating::getVotes).sum();
+            int numberOfVotes = restaurantRatings.stream().filter(restaurantRating -> restaurantRating.getTag().getName().equals(tag.getName())).mapToInt(RestaurantRating::getVotes).sum();
             restaurantRatingResponse.setVotes(numberOfVotes);
 
             boolean voted = userTags.contains(tag);

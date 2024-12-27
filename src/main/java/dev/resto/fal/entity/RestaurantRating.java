@@ -1,6 +1,5 @@
 package dev.resto.fal.entity;
 
-import dev.resto.fal.enums.TagType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,23 +17,18 @@ public class RestaurantRating {
     private Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
-    @Enumerated(EnumType.STRING)
-    private TagType tagType;
-
-    private String tagName;
+    @ManyToOne
+    @JoinColumn(name = "tag_id", nullable = false)
+    private Tag tag;
 
     private int votes;
 
-    String emoji;
-
-    public RestaurantRating(Restaurant restaurant, TagType tagType, String tagName, int votes, String emoji) {
+    public RestaurantRating(Restaurant restaurant, Tag tag, int votes) {
         this.restaurant = restaurant;
-        this.tagType = tagType;
-        this.tagName = tagName;
+        this.tag = tag;
         this.votes = votes;
-        this.emoji = emoji;
     }
 }

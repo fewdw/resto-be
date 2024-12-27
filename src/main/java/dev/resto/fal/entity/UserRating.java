@@ -28,12 +28,9 @@ public class UserRating {
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
 
-    private boolean rating;
-
-    public UserRating(User user, Restaurant restaurant, Tag tag, boolean rating) {
+    public UserRating(User user, Restaurant restaurant, Tag tag) {
         this.user = user;
         this.restaurant = restaurant;
         this.tag = tag;
-        this.rating = rating;
     }
 }

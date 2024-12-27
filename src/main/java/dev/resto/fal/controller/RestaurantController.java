@@ -38,10 +38,14 @@ public class RestaurantController {
         return restaurantService.getRestaurant(placeId, OauthUsername.getId(principal));
     }
 
-    @PostMapping("/list")
-    public ResponseEntity<List<RestaurantThumbnail>> getAllRestaurantThumbnails(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterRequest filterRequest){
-        List<RestaurantThumbnail> response = restaurantService.getAllRestaurantThumbnails(OauthUsername.getId(principal), filterRequest);
-        return ResponseEntity.ok(response);
+    //TODO: add limit of 20 restaurants
+    //TODO: test if it works
+    @PostMapping("/thumbnails-search")
+    public ResponseEntity<List<RestaurantThumbnail>> getFilteredThumbnails(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterRequest filterRequest){
+        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getFilteredThumbnails(OauthUsername.getId(principal), filterRequest);
+
+        return ResponseEntity.ok(restaurantThumbnails);
     }
+
 
 }

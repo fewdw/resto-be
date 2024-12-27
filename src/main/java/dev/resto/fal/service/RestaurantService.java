@@ -9,13 +9,16 @@ import dev.resto.fal.repository.UserRepository;
 import dev.resto.fal.request.FilterRequest;
 import dev.resto.fal.response.RestaurantSearch;
 import dev.resto.fal.response.RestaurantThumbnail;
+import dev.resto.fal.specification.RestaurantSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
@@ -98,7 +101,23 @@ public class RestaurantService {
         );
     }
 
-    public List<RestaurantThumbnail> getAllRestaurantThumbnails(String userId, FilterRequest filterRequest) {
+    public List<RestaurantThumbnail> getFilteredThumbnails(String userId, FilterRequest filterRequest) {
+        Specification<Restaurant> spec = Specification.where(RestaurantSpecification.containsSearchBar(filterRequest.getSearchBar()))
+                .and(RestaurantSpecification.hasTags(filterRequest.getTags(), filterRequest.isStrictTags()))
+                .and(RestaurantSpecification.sortBy(filterRequest));
 
+        List<Restaurant> restaurants = restaurantRepository.findAll(spec);
+
+        return restaurants.stream()
+                .map(restaurant -> new RestaurantThumbnail(
+                        restaurant.getPhotoUrl(),
+                        restaurant.getName(),
+                        restaurant.getPlaceId(),
+                        restaurant.getAddress(),
+                        userRepository.findById(userId).get().getFavorites().contains(restaurant),
+                        restaurant.getAllTagsFromRatings()
+                ))
+                .collect(Collectors.toList());
     }
+
 }

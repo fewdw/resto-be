@@ -61,14 +61,16 @@ public class UserRatingService {
     }
 
     private void addRating(User user, Restaurant restaurant, Tag tag) {
-        UserRating userRating = new UserRating(user, restaurant, tag, true);
+        UserRating userRating = new UserRating(user, restaurant, tag);
         userRatingRepository.save(userRating);
 
         RestaurantRating restaurantRating = restaurantRatingRepository.findByRestaurantAndTagName(restaurant, tag.getName())
-                .orElseGet(() -> new RestaurantRating(restaurant, tag.getType(), tag.getName(), 0, tag.getEmoji()));
+                .orElseGet(() -> new RestaurantRating(restaurant, tag, 0));
 
         restaurantRating.setVotes(restaurantRating.getVotes() + 1);
-        restaurantRatingRepository.save(restaurantRating);
+        restaurant.setNumberOfReviews(restaurant.getNumberOfReviews() + 1);
+        restaurant.addRating(restaurantRating);
+        restaurantRepository.save(restaurant);
     }
 
     private void removeRating(User user, Restaurant restaurant, Tag tag) {
@@ -79,8 +81,10 @@ public class UserRatingService {
                 .orElseThrow(() -> new RuntimeException("Restaurant rating not found"));
 
         restaurantRating.setVotes(restaurantRating.getVotes() - 1);
+        restaurant.setNumberOfReviews(restaurant.getNumberOfReviews() - 1);
+        restaurantRepository.save(restaurant);
 
-        if (restaurantRating.getVotes() == 0) {
+        if (restaurantRating.getVotes() <= 0) {
             restaurantRatingRepository.delete(restaurantRating);
             return;
         }
