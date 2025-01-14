@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RestaurantRating {
+public class RestaurantRating implements Comparable<RestaurantRating>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,5 +30,10 @@ public class RestaurantRating {
         this.restaurant = restaurant;
         this.tag = tag;
         this.votes = votes;
+    }
+
+    @Override
+    public int compareTo(RestaurantRating o) {
+        return this.votes - o.votes;
     }
 }

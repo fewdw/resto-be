@@ -35,6 +35,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileResponse> getProfile(@AuthenticationPrincipal OAuth2User principal) {
+        return ResponseEntity.ok(userService.getProfile(OauthUsername.getId(principal)));
+    }
+
     //TODO: add limit of 20
     @GetMapping("/favorites")
     public ResponseEntity<List<RestaurantThumbnail>> getFavorites(@AuthenticationPrincipal OAuth2User principal) {
@@ -59,9 +64,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getRestaurantsAdded(userId));
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<UserProfileResponse> getProfile(@AuthenticationPrincipal OAuth2User principal) {
-        return ResponseEntity.ok(userService.getProfile(OauthUsername.getId(principal)));
-    }
+
 
 }

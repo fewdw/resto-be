@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,18 +54,18 @@ public class Restaurant {
     private LocalDateTime dateAdded;
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RestaurantRating> ratings = new HashSet<>();
+    private List<RestaurantRating> ratings;
 
     public void addRating(RestaurantRating rating) {
         this.ratings.add(rating);
     }
 
-    public Set<ThumbnailRatingResponse> getAllTagsFromRatings() {
+    public List<ThumbnailRatingResponse> getAllTagsFromRatings() {
         return ratings.stream()
                 .map(ratings -> new ThumbnailRatingResponse(
                         ratings.getTag(),
                         ratings.getVotes()
-                )).collect(Collectors.toSet());
+                )).collect(Collectors.toList());
     }
 
     public Restaurant(String placeId, String name, String address, String link, String website, String phoneNumber, String photoUrl, List<String> weekdayText, User user, LocalDateTime dateAdded) {

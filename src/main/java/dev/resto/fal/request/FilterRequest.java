@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -17,7 +18,7 @@ public class FilterRequest {
 
     private String searchBar;
     private boolean strictTags;
-    private Set<Tag> tags;
+    private List<Tag> tags;
     private SortBy sortBy;
 
 }

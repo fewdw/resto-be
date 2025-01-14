@@ -6,6 +6,7 @@ import dev.resto.fal.request.FilterRequest;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
 import java.util.Set;
 
 public class RestaurantSpecification {
@@ -23,7 +24,7 @@ public class RestaurantSpecification {
         };
     }
 
-    public static Specification<Restaurant> hasTags(Set<Tag> tags, boolean strictTags) {
+    public static Specification<Restaurant> hasTags(List<Tag> tags, boolean strictTags) {
         return (root, query, cb) -> {
             if (tags == null || tags.isEmpty()) {
                 return cb.conjunction();
