@@ -3,6 +3,7 @@ package dev.resto.fal.service;
 import dev.resto.fal.enums.FavoriteAction;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.entity.User;
+import dev.resto.fal.exceptions.AuthenticationException;
 import dev.resto.fal.exceptions.UserNotFoundException;
 import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
@@ -40,6 +41,12 @@ public class UserService {
     }
 
     public NavbarResponse getNavbar(OAuth2User principal) {
+
+        if (principal == null) {
+            // You can throw an exception or return an appropriate response
+            throw new AuthenticationException("User not authenticated");
+        }
+
         String userId = OauthUsername.getId(principal);
         User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));
 
