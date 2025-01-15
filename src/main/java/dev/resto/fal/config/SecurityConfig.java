@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/").permitAll();
                     auth.requestMatchers("/api/tags").permitAll();
+                    auth.requestMatchers("/api/user/navbar").permitAll();
                     auth.requestMatchers("/favicon.ico").permitAll();
                     auth.anyRequest().authenticated();
                 })

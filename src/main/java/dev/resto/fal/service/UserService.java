@@ -41,7 +41,7 @@ public class UserService {
 
     public NavbarResponse getNavbar(OAuth2User principal) {
         String userId = OauthUsername.getId(principal);
-        User user = userRepository.findById(userId).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));
 
         return new NavbarResponse(user.getName(), user.getPicture(), user.getUsername());
     }
