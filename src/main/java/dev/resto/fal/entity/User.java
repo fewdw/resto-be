@@ -27,25 +27,27 @@ public class User {
 
     private String picture;
 
+    private String username;
+
     @Column(name = "created_at")
     private LocalDate createdAt;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(
             name = "favorites",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "restaurant_id")
     )
-    private Set<Restaurant> favorites = new HashSet<>();
+    private List<Restaurant> favorites;
 
     private int numberOfRestaurantsAdded;
 
-
-    public User(String id,String email, String name, String picture, LocalDate createdAt, int numberOfRestaurantsAdded) {
+    public User(String id,String email, String name, String picture,String username, LocalDate createdAt, int numberOfRestaurantsAdded) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.picture = picture;
+        this.username = username;
         this.createdAt = createdAt;
         this.numberOfRestaurantsAdded = numberOfRestaurantsAdded;
     }

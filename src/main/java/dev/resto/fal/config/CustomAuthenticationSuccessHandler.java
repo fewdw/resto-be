@@ -2,6 +2,7 @@ package dev.resto.fal.config;
 
 import dev.resto.fal.entity.User;
 import dev.resto.fal.service.UserService;
+import dev.resto.fal.util.UsernameGenerator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,8 +37,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String name = (String) oAuth2User.getAttributes().get("name");
         String picture = (String) oAuth2User.getAttributes().get("picture");
 
+        String username = UsernameGenerator.generateRandomUsername();
+        while (userService.userExistsByUsername(username)) {
+            username = UsernameGenerator.generateRandomUsername();
+        }
+
         if (!userService.userExists(email)) {
-            User newUser = new User(id, email, name, picture, LocalDate.now(), 0);
+            User newUser = new User(id, email, name, picture, username, LocalDate.now(), 0);
             userService.addUser(newUser);
         }
 

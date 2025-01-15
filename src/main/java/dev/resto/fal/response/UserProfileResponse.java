@@ -11,6 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserProfileResponse {
     private String name;
-    private String email;
     private String picture;
+    private String username;
 }

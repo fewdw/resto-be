@@ -29,8 +29,9 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public RestaurantApiInfo addRestaurant(@AuthenticationPrincipal OAuth2User principal, @RequestParam(required = true) String placeId) throws IOException {
-        return restaurantService.addRestaurant(placeId, OauthUsername.getId(principal));
+    public ResponseEntity<RestaurantApiInfo> addRestaurant(@AuthenticationPrincipal OAuth2User principal, @RequestParam(required = true) String placeId) throws IOException {
+        RestaurantApiInfo restaurant =  restaurantService.addRestaurant(placeId, OauthUsername.getId(principal));
+        return ResponseEntity.ok(restaurant);
     }
 
     @GetMapping("/{placeId}")

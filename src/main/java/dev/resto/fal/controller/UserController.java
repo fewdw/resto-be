@@ -35,33 +35,22 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/profile")
-    public ResponseEntity<UserProfileResponse> getProfile(@AuthenticationPrincipal OAuth2User principal) {
-        return ResponseEntity.ok(userService.getProfile(OauthUsername.getId(principal)));
+    @GetMapping("/profile/{username}")
+    public ResponseEntity<UserProfileResponse> getProfile(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String username) {
+        return ResponseEntity.ok(userService.getProfile(OauthUsername.getId(principal), username));
     }
 
     //TODO: add limit of 20
-    @GetMapping("/favorites")
-    public ResponseEntity<List<RestaurantThumbnail>> getFavorites(@AuthenticationPrincipal OAuth2User principal) {
-        return ResponseEntity.ok(userService.getFavorites(OauthUsername.getId(principal)));
+    @GetMapping("/favorites/{username}")
+    public ResponseEntity<List<RestaurantThumbnail>> getFavorites(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String username) {
+        return ResponseEntity.ok(userService.getFavorites(OauthUsername.getId(principal), username));
     }
 
-    //TODO: add limit of 20
-    @GetMapping("/favorites/{userId}")
-    public ResponseEntity<List<RestaurantThumbnail>> getFavorites(@PathVariable(required = true) String userId) {
-        return ResponseEntity.ok(userService.getFavorites(userId));
-    }
 
     //TODO: add limit of 20
-    @GetMapping("/restaurants-added")
-    public ResponseEntity<List<RestaurantThumbnail>> getRestaurantsAdded(@AuthenticationPrincipal OAuth2User principal) {
-        return ResponseEntity.ok(userService.getRestaurantsAdded(OauthUsername.getId(principal)));
-    }
-
-    //TODO: add limit of 20
-    @GetMapping("/restaurants-added/{userId}")
-    public ResponseEntity<List<RestaurantThumbnail>> getRestaurantsAdded(@PathVariable(required = true) String userId) {
-        return ResponseEntity.ok(userService.getRestaurantsAdded(userId));
+    @GetMapping("/restaurants-added/{username}")
+    public ResponseEntity<List<RestaurantThumbnail>> getRestaurantsAdded(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String username) {
+        return ResponseEntity.ok(userService.getRestaurantsAdded(OauthUsername.getId(principal), username));
     }
 
 

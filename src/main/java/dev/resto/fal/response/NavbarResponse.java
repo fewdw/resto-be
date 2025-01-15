@@ -9,4 +9,5 @@ import lombok.*;
 public class NavbarResponse {
     private String name;
     private String profilePicture;
+    private String username;
 }

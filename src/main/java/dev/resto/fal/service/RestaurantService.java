@@ -2,6 +2,9 @@ package dev.resto.fal.service;
 
 import dev.resto.fal.client.RestaurantApiClient;
 import dev.resto.fal.entity.Restaurant;
+import dev.resto.fal.exceptions.RestaurantAddLimitException;
+import dev.resto.fal.exceptions.RestaurantAlreadyExistsException;
+import dev.resto.fal.exceptions.UserNotFoundException;
 import dev.resto.fal.response.RestaurantApiInfo;
 import dev.resto.fal.entity.User;
 import dev.resto.fal.repository.RestaurantRepository;
@@ -47,17 +50,17 @@ public class RestaurantService {
     public RestaurantApiInfo addRestaurant(String placeId, String userId) throws IOException {
 
         if(restaurantRepository.existsByPlaceId(placeId)){
-            throw new RuntimeException("Restaurant already exists");
+            throw new RestaurantAlreadyExistsException("Restaurant already exists");
         }
 
         RestaurantApiInfo restaurantApiInfo = restaurantApiClient.getRestaurantInfo(placeId);
 
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new RuntimeException("User not found")
+                () -> new UserNotFoundException("User not found")
         );
 
         if (user.getNumberOfRestaurantsAdded() >= restaurantAddLimit) {
-            throw new RuntimeException("Restaurant add limit reached");
+            throw new RestaurantAddLimitException("Restaurant add limit reached");
         }
 
         String s3ImageUrl = bucketService.putObjectIntoBucket(restaurantApiInfo.getPhotoUrl(), restaurantApiInfo.getPlaceId());
@@ -87,7 +90,7 @@ public class RestaurantService {
     public RestaurantApiInfo getRestaurant(String placeId, String id) {
 
         Restaurant restaurant = restaurantRepository.findByPlaceId(placeId).orElseThrow(
-                () -> new RuntimeException("Restaurant not found")
+                () -> new UserNotFoundException("Restaurant not found")
         );
 
         return new RestaurantApiInfo(
