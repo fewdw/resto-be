@@ -1,6 +1,7 @@
 package dev.resto.fal.service;
 
 import dev.resto.fal.entity.*;
+import dev.resto.fal.exceptions.UserNotFoundException;
 import dev.resto.fal.repository.*;
 import dev.resto.fal.request.RatingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class UserRatingService {
     public ResponseEntity<String> leaveRating(String userId, RatingRequest ratingRequest) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         Restaurant restaurant = restaurantRepository.findByUsername(ratingRequest.getPlaceId())
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
         Tag tag = tagRepository.findByName(ratingRequest.getTagName())
