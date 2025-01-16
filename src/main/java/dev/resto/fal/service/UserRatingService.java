@@ -32,7 +32,7 @@ public class UserRatingService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        Restaurant restaurant = restaurantRepository.findByPlaceId(ratingRequest.getPlaceId())
+        Restaurant restaurant = restaurantRepository.findByUsername(ratingRequest.getPlaceId())
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
         Tag tag = tagRepository.findByName(ratingRequest.getTagName())
                 .orElseThrow(() -> new RuntimeException("Tag not found"));

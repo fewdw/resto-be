@@ -116,7 +116,8 @@ public class RestaurantService {
     }
 
     public List<RestaurantThumbnail> getFilteredThumbnails(String userId, FilterRequest filterRequest) {
-        Specification<Restaurant> spec = Specification.where(RestaurantSpecification.containsSearchBar(filterRequest.getSearchBar()))
+        Specification<Restaurant> spec = Specification
+                .where(RestaurantSpecification.containsSearchBar(filterRequest.getSearchBar()))
                 .and(RestaurantSpecification.hasTags(filterRequest.getTags(), filterRequest.isStrictTags()))
                 .and(RestaurantSpecification.sortBy(filterRequest));
 
