@@ -20,9 +20,9 @@ public class RestaurantRatingController {
     @Autowired
     RestaurantRatingService restaurantRatingService;
 
-    @GetMapping("/{placeId}")
-    public List<RestaurantRatingResponse> getRestaurantTags(@AuthenticationPrincipal OAuth2User principal, @PathVariable String placeId) {
-        return restaurantRatingService.getRestaurantTags(OauthUsername.getId(principal), placeId);
+    @GetMapping("/{restaurantUsername}")
+    public List<RestaurantRatingResponse> getRestaurantTags(@AuthenticationPrincipal OAuth2User principal, @PathVariable String restaurantUsername) {
+        return restaurantRatingService.getRestaurantTags(OauthUsername.getId(principal), restaurantUsername);
     }
 
 }

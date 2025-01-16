@@ -53,6 +53,8 @@ public class Restaurant {
 
     private LocalDateTime dateAdded;
 
+    private String username;
+
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RestaurantRating> ratings;
 
@@ -68,7 +70,7 @@ public class Restaurant {
                 )).collect(Collectors.toList());
     }
 
-    public Restaurant(String placeId, String name, String address, String link, String website, String phoneNumber, String photoUrl, List<String> weekdayText, User user, LocalDateTime dateAdded) {
+    public Restaurant(String placeId, String name, String address, String link, String website, String phoneNumber, String photoUrl, List<String> weekdayText, User user, LocalDateTime dateAdded, String username) {
         this.placeId = placeId;
         this.name = name;
         this.address = address;
@@ -79,5 +81,6 @@ public class Restaurant {
         this.weekdayText = weekdayText;
         this.user = user;
         this.dateAdded = dateAdded;
+        this.username = username;
     }
 }

@@ -29,9 +29,9 @@ public class RestaurantRatingService {
     private UserRepository userRepository;
 
 
-    public List<RestaurantRatingResponse> getRestaurantTags(String userId, String placeId) {
+    public List<RestaurantRatingResponse> getRestaurantTags(String userId, String restaurantUsername) {
 
-        Restaurant restaurant = restaurantRepository.findByPlaceId(placeId)
+        Restaurant restaurant = restaurantRepository.findByUsername(restaurantUsername)
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
         User user = userRepository.findById(userId).orElseThrow(

@@ -13,6 +13,7 @@ import dev.resto.fal.request.FilterRequest;
 import dev.resto.fal.response.RestaurantSearch;
 import dev.resto.fal.response.RestaurantThumbnail;
 import dev.resto.fal.specification.RestaurantSpecification;
+import dev.resto.fal.util.UsernameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
@@ -65,6 +66,13 @@ public class RestaurantService {
 
         String s3ImageUrl = bucketService.putObjectIntoBucket(restaurantApiInfo.getPhotoUrl(), restaurantApiInfo.getPlaceId());
 
+        String restaurantUsername = UsernameGenerator.generateRandomUsername();
+        while(restaurantRepository.existsByUsername(restaurantUsername)){
+            restaurantUsername = UsernameGenerator.generateRandomUsername();
+        }
+
+        restaurantApiInfo.setRestaurantUsername(restaurantUsername);
+
         Restaurant newRestaurant = new Restaurant(
                 restaurantApiInfo.getPlaceId(),
                 restaurantApiInfo.getName(),
@@ -75,7 +83,8 @@ public class RestaurantService {
                 s3ImageUrl,
                 restaurantApiInfo.getWeekdayText(),
                 user,
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                restaurantUsername
         );
 
         restaurantApiInfo.setPhotoUrl(s3ImageUrl);
@@ -87,9 +96,9 @@ public class RestaurantService {
         return restaurantApiInfo;
     }
 
-    public RestaurantApiInfo getRestaurant(String placeId, String id) {
+    public RestaurantApiInfo getRestaurant(String restaurantUsername, String id) {
 
-        Restaurant restaurant = restaurantRepository.findByPlaceId(placeId).orElseThrow(
+        Restaurant restaurant = restaurantRepository.findByUsername(restaurantUsername).orElseThrow(
                 () -> new UserNotFoundException("Restaurant not found")
         );
 
@@ -101,7 +110,8 @@ public class RestaurantService {
                 restaurant.getWebsite(),
                 restaurant.getPhoneNumber(),
                 restaurant.getPhotoUrl(),
-                restaurant.getWeekdayText()
+                restaurant.getWeekdayText(),
+                restaurant.getUsername()
         );
     }
 
@@ -122,7 +132,8 @@ public class RestaurantService {
                         restaurant.getPlaceId(),
                         restaurant.getAddress(),
                         userRepository.findById(userId).get().getFavorites().contains(restaurant),
-                        restaurant.getAllTagsFromRatings()
+                        restaurant.getAllTagsFromRatings(),
+                        restaurant.getUsername()
                 ))
                 .collect(Collectors.toList());
     }

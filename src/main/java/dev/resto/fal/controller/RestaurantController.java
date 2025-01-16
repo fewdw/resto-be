@@ -34,9 +34,9 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurant);
     }
 
-    @GetMapping("/{placeId}")
-    public RestaurantApiInfo getRestaurant(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String placeId) throws IOException {
-        return restaurantService.getRestaurant(placeId, OauthUsername.getId(principal));
+    @GetMapping("/{restaurantUsername}")
+    public RestaurantApiInfo getRestaurant(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String restaurantUsername) throws IOException {
+        return restaurantService.getRestaurant(restaurantUsername, OauthUsername.getId(principal));
     }
 
     //TODO: add limit of 20 restaurants

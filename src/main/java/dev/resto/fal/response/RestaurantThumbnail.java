@@ -23,14 +23,16 @@ public class RestaurantThumbnail implements Comparable<RestaurantThumbnail> {
     private boolean isFavorite;
     private List<ThumbnailRatingResponse> ratings;
     private LocalDateTime createdAt;
+    private String restaurantUsername;
 
-    public RestaurantThumbnail(String imageUrl, String name, String placeId, String address, boolean isFavorite, List<ThumbnailRatingResponse> ratings) {
+    public RestaurantThumbnail(String imageUrl, String name, String placeId, String address, boolean isFavorite, List<ThumbnailRatingResponse> ratings, String restaurantUsername) {
         this.imageUrl = imageUrl;
         this.name = name;
         this.placeId = placeId;
         this.address = address;
         this.isFavorite = isFavorite;
         this.ratings = ratings;
+        this.restaurantUsername = restaurantUsername;
     }
 
     @Override

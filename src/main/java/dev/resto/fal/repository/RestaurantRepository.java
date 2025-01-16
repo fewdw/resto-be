@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, JpaSpecificationExecutor<Restaurant> {
     boolean existsByPlaceId(String placeId);
-    Optional<Restaurant> findByPlaceId(String placeId);
+    Optional<Restaurant> findByUsername(String placeId);
     List<Restaurant> findAllByUser(User user);
+    boolean existsByUsername(String username);
+    Optional<Restaurant> findByPlaceId(String placeId);
 }

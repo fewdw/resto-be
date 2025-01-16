@@ -86,7 +86,8 @@ public class UserService {
                         restaurant.getAddress(),
                         userRepository.findById(userId).get().getFavorites().contains(restaurant),
                         restaurant.getAllTagsFromRatings(),
-                        restaurant.getDateAdded()
+                        restaurant.getDateAdded(),
+                        restaurant.getUsername()
                 ))
                 .sorted()
                 .collect(Collectors.toList());
@@ -105,7 +106,9 @@ public class UserService {
                         restaurant.getAddress(),
                         userRepository.findById(userId).get().getFavorites().contains(restaurant),
                         restaurant.getAllTagsFromRatings(),
-                        restaurant.getDateAdded()
+                        restaurant.getDateAdded(),
+                        restaurant.getUsername()
+
                 ))
                 .sorted()
                 .collect(Collectors.toList());
