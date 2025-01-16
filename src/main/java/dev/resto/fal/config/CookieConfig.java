@@ -12,6 +12,7 @@ public class CookieConfig {
         DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
         cookieSerializer.setSameSite("None");
         cookieSerializer.setUseSecureCookie(true);
+        cookieSerializer.setCookieMaxAge(60 * 60 * 24 * 365);
         return cookieSerializer;
     }
 }
