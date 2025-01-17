@@ -21,8 +21,8 @@ public class TagController {
         return tagService.getAllTags();
     }
 
-    @PostMapping
-    public Tag addTag(@Valid @RequestBody AddTag tag) {
-        return tagService.addTag(tag);
-    }
+//    @PostMapping
+//    public Tag addTag(@Valid @RequestBody AddTag tag) {
+//        return tagService.addTag(tag);
+//    }
 }
