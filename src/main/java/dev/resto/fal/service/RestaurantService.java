@@ -123,7 +123,6 @@ public class RestaurantService {
 
         List<Restaurant> restaurants = restaurantRepository.findAll(spec);
 
-        // sort ratings by votes
         restaurants.forEach(restaurant -> restaurant.getRatings().sort(Comparator.comparingInt(rating -> -rating.getVotes())));
 
         return restaurants.stream()
