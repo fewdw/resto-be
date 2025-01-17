@@ -23,6 +23,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/checkAuth")
+    public ResponseEntity<String> checkAuth(@AuthenticationPrincipal OAuth2User principal) {
+        return ResponseEntity.ok(OauthUsername.getId(principal));
+    }
+
     @GetMapping("/navbar")
     public ResponseEntity<NavbarResponse> getNavbar(@AuthenticationPrincipal OAuth2User principal) {
         NavbarResponse navbarResponse = userService.getNavbar(principal);
