@@ -102,7 +102,6 @@ public class RestaurantApiClient {
 
         restaurantApiInfo.setRestaurantName((String) result.get("name"));
         restaurantApiInfo.setRestaurantAddress((String) result.get("formatted_address"));
-        restaurantApiInfo.setPlaceId((String) result.get("place_id"));
         restaurantApiInfo.setImageUrl((String) result.get("url"));
         restaurantApiInfo.setWebsite((String) result.get("website"));
         restaurantApiInfo.setPhoneNumber((String) result.get("formatted_phone_number"));

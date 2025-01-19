@@ -16,9 +16,4 @@ public class RootController {
     public String root() {
         return "{\"RestoMtl\":\"Hello World!\"}";
     }
-
-    @GetMapping("/test")
-    public String test(@AuthenticationPrincipal OAuth2User principal) {
-        return OauthHelper.getEmail(principal);
-    }
 }

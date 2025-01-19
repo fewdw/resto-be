@@ -65,7 +65,7 @@ public class RestaurantService {
 
     }
 
-    public RestaurantApiInfo addRestaurant(String placeId, String userId) throws IOException {
+    public void addRestaurant(String placeId, String userId) throws IOException {
 
         if (restaurantRepository.existsByPlaceId(placeId)) {
             throw new RestaurantAlreadyExistsException("Restaurant already exists");
@@ -77,7 +77,6 @@ public class RestaurantService {
         } catch (Exception e) {
             throw new NotFoundException("Restaurant not found");
         }
-
 
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found")
@@ -93,14 +92,13 @@ public class RestaurantService {
         while (restaurantRepository.existsByUsername(restaurantUsername)) {
             restaurantUsername = UsernameGenerator.generateRandomUsername();
         }
-
         restaurantApiInfo.setRestaurantUsername(restaurantUsername);
 
         Restaurant newRestaurant = new Restaurant(
-                restaurantApiInfo.getPlaceId(),
+                placeId,
                 restaurantApiInfo.getRestaurantName(),
                 restaurantApiInfo.getRestaurantAddress(),
-                restaurantApiInfo.getGoogleMapUrl(),
+                "https://www.google.com/maps/place/?q=place_id:" + placeId,
                 restaurantApiInfo.getWebsite(),
                 restaurantApiInfo.getPhoneNumber(),
                 s3ImageUrl,
@@ -116,7 +114,6 @@ public class RestaurantService {
         userRepository.save(user);
 
         restaurantRepository.save(newRestaurant);
-        return restaurantApiInfo;
     }
 
     public RestaurantInfoPage getRestaurant(String restaurantUsername) {

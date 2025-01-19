@@ -1,5 +1,6 @@
 package dev.resto.fal.service;
 
+import dev.resto.fal.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -28,6 +29,11 @@ public class BucketService {
     }
 
     public String putObjectIntoBucket(String location ,String imageUrl, String placeId) throws IOException {
+
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            return null;
+        }
+
         URL url = new URL(imageUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
