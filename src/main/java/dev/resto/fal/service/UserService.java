@@ -4,17 +4,16 @@ import dev.resto.fal.enums.FavoriteAction;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.entity.User;
 import dev.resto.fal.exceptions.AuthenticationException;
-import dev.resto.fal.exceptions.UserNotFoundException;
+import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
-import dev.resto.fal.request.UserFavorite;
-import dev.resto.fal.response.NavbarResponse;
-import dev.resto.fal.response.RestaurantThumbnail;
-import dev.resto.fal.response.UserProfileResponse;
-import dev.resto.fal.util.OauthUsername;
+import dev.resto.fal.DTO.UserFavorite;
+import dev.resto.fal.DTO.NavbarResponse;
+import dev.resto.fal.DTO.RestaurantThumbnailOld;
+import dev.resto.fal.DTO.UserProfileResponse;
+import dev.resto.fal.util.OauthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -47,15 +46,15 @@ public class UserService {
             throw new AuthenticationException("User not authenticated");
         }
 
-        String userId = OauthUsername.getId(principal);
-        User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));
+        String userId = OauthHelper.getId(principal);
+        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
 
         return new NavbarResponse(user.getName(), user.getPicture(), user.getUsername());
     }
 
     public ResponseEntity<String> addFavorite(String userId, UserFavorite userFavorite) {
 
-        User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
         Restaurant restaurant = restaurantRepository.findByPlaceId(userFavorite.getPlaceId()).orElseThrow(()-> new RuntimeException("Restaurant not found"));// TODO HANDLE CUSTOM
 
         if (userFavorite.getAction() == FavoriteAction.ADD && !user.getFavorites().contains(restaurant)) {
@@ -74,12 +73,12 @@ public class UserService {
 
     }
 
-    public List<RestaurantThumbnail> getFavorites(String userId, String username) {
+    public List<RestaurantThumbnailOld> getFavorites(String userId, String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         return user.getFavorites().stream()
-                .map(restaurant -> new RestaurantThumbnail(
+                .map(restaurant -> new RestaurantThumbnailOld(
                         restaurant.getPhotoUrl(),
                         restaurant.getName(),
                         restaurant.getPlaceId(),
@@ -93,13 +92,13 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public List<RestaurantThumbnail> getRestaurantsAdded(String userId, String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found"));
+    public List<RestaurantThumbnailOld> getRestaurantsAdded(String userId, String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
 
         List<Restaurant> restaurants = restaurantRepository.findAllByUser(user);
 
         return restaurants.stream()
-                .map(restaurant -> new RestaurantThumbnail(
+                .map(restaurant -> new RestaurantThumbnailOld(
                         restaurant.getPhotoUrl(),
                         restaurant.getName(),
                         restaurant.getPlaceId(),
@@ -115,7 +114,7 @@ public class UserService {
     }
 
     public UserProfileResponse getProfile(String userId, String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
         return new UserProfileResponse(user.getName(), user.getPicture(), user.getUsername());
 
     }

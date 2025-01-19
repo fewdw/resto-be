@@ -1,16 +1,18 @@
 package dev.resto.fal.client;
 
-import dev.resto.fal.response.RestaurantApiInfo;
-import dev.resto.fal.response.RestaurantSearch;
+import dev.resto.fal.DTO.AddRestaurantThumbnail;
+import dev.resto.fal.DTO.RestaurantApiInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -22,9 +24,8 @@ public class RestaurantApiClient {
     @Value("${google.api.key}")
     private String apiKey;
 
-    public List<RestaurantSearch> searchRestaurants(String query) {
+    public List<String> searchRestaurants(String query) {
         String url = String.format("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%s&key=%s", query, apiKey);
-
         return webClientBuilder.build()
                 .get()
                 .uri(url)
@@ -32,31 +33,58 @@ public class RestaurantApiClient {
                 .bodyToMono(Map.class)
                 .map(response -> (List<Map<String, Object>>) response.get("predictions"))
                 .flatMapMany(Flux::fromIterable)
-                .filter(this::hasFoodType) // Filter results that have "food" in types
-                .map(this::mapToRestaurantSearch)
+                .filter(this::hasFoodType)
+                .map(prediction -> (String) prediction.get("place_id"))
                 .collectList()
                 .block();
     }
 
+
     private boolean hasFoodType(Map<String, Object> prediction) {
         List<String> types = (List<String>) prediction.get("types");
-        return types != null && types.contains("food");
+
+        Set<String> foodTypes = Set.of("food", "bar", "meal_takeaway", "restaurant", "cafe");
+        boolean isFoodPlace = !Collections.disjoint(types, foodTypes);
+
+        boolean typesNotNull = types != null;
+
+        return isFoodPlace && typesNotNull;
     }
 
-    private RestaurantSearch mapToRestaurantSearch(Map<String, Object> prediction) {
-        String name = (String) prediction.get("description");
-        String placeId = (String) prediction.get("place_id");
+    public List<AddRestaurantThumbnail> getRestaurantThumbnails(List<String> placeIds) {
+        return placeIds.stream()
+                .map(this::getRestaurantThumbnailInfo)
+                .collect(Collectors.toList());
+    }
 
-        RestaurantSearch restaurant = new RestaurantSearch();
-        restaurant.setName(name);
-        restaurant.setPlaceId(placeId);
+    private AddRestaurantThumbnail getRestaurantThumbnailInfo(String placeId) {
+        String url = String.format("https://maps.googleapis.com/maps/api/place/details/json?place_id=%s&key=%s", placeId, apiKey);
+        Map<String, Object> prediction = webClientBuilder.build()
+                .get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
 
-        return restaurant;
+        Map<String, Object> result = (Map<String, Object>) prediction.get("result");
+
+        AddRestaurantThumbnail addRestaurantThumbnail = new AddRestaurantThumbnail();
+        addRestaurantThumbnail.setName((String) result.get("name"));
+        addRestaurantThumbnail.setAddress((String) result.get("formatted_address"));
+        addRestaurantThumbnail.setPlaceId((String) result.get("place_id"));
+
+        List<Map<String, Object>> photos = (List<Map<String, Object>>) result.get("photos");
+        if (photos != null && !photos.isEmpty()) {
+            String photoReference = (String) photos.get(0).get("photo_reference");
+            String photoUrl = String.format("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=%s&key=%s", photoReference, apiKey);
+            addRestaurantThumbnail.setImageUrl(photoUrl);
+        }
+
+        return addRestaurantThumbnail;
     }
 
 
     public RestaurantApiInfo getRestaurantInfo(String placeId) {
-        // Build the URL for the API request using placeId and apiKey
         String url = String.format("https://maps.googleapis.com/maps/api/place/details/json?place_id=%s&key=%s", placeId, apiKey);
         return webClientBuilder.build()
                 .get()
@@ -67,23 +95,23 @@ public class RestaurantApiClient {
                 .block();
     }
 
-    public RestaurantApiInfo mapToRestaurantInfo(Map<String, Object> prediction) {
+    private RestaurantApiInfo mapToRestaurantInfo(Map<String, Object> prediction) {
         Map<String, Object> result = (Map<String, Object>) prediction.get("result");
 
         RestaurantApiInfo restaurantApiInfo = new RestaurantApiInfo();
 
-        restaurantApiInfo.setName((String) result.get("name"));
-        restaurantApiInfo.setFormattedAddress((String) result.get("formatted_address"));
+        restaurantApiInfo.setRestaurantName((String) result.get("name"));
+        restaurantApiInfo.setRestaurantAddress((String) result.get("formatted_address"));
         restaurantApiInfo.setPlaceId((String) result.get("place_id"));
-        restaurantApiInfo.setUrl((String) result.get("url"));
+        restaurantApiInfo.setImageUrl((String) result.get("url"));
         restaurantApiInfo.setWebsite((String) result.get("website"));
-        restaurantApiInfo.setFormattedPhoneNumber((String) result.get("formatted_phone_number"));
+        restaurantApiInfo.setPhoneNumber((String) result.get("formatted_phone_number"));
 
         List<Map<String, Object>> photos = (List<Map<String, Object>>) result.get("photos");
         if (photos != null && !photos.isEmpty()) {
             String photoReference = (String) photos.get(0).get("photo_reference");
             String photoUrl = String.format("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=%s&key=%s", photoReference, apiKey);
-            restaurantApiInfo.setPhotoUrl(photoUrl);
+            restaurantApiInfo.setImageUrl(photoUrl);
         }
 
         Map<String, Object> openingHours = (Map<String, Object>) result.get("opening_hours");

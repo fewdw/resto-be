@@ -1,4 +1,4 @@
-package dev.resto.fal.response;
+package dev.resto.fal.DTO;
 
 import dev.resto.fal.entity.Tag;
 import lombok.AllArgsConstructor;

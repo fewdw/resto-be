@@ -1,16 +1,17 @@
-package dev.resto.fal.response;
+package dev.resto.fal.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserProfileResponse {
+public class AddRestaurantThumbnail {
     private String name;
-    private String picture;
-    private String username;
+    private String address;
+    private String imageUrl;
+    private String placeId;
 }

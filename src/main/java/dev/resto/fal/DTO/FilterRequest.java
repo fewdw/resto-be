@@ -1,4 +1,4 @@
-package dev.resto.fal.request;
+package dev.resto.fal.DTO;
 
 import dev.resto.fal.entity.Tag;
 import dev.resto.fal.enums.SortBy;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter

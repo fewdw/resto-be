@@ -2,12 +2,11 @@ package dev.resto.fal.specification;
 
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.entity.Tag;
-import dev.resto.fal.request.FilterRequest;
+import dev.resto.fal.DTO.FilterRequest;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
-import java.util.Set;
 
 public class RestaurantSpecification {
 

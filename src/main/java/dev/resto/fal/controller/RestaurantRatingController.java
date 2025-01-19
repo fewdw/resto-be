@@ -1,8 +1,8 @@
 package dev.resto.fal.controller;
 
-import dev.resto.fal.response.RestaurantRatingResponse;
+import dev.resto.fal.DTO.RestaurantRatingResponse;
 import dev.resto.fal.service.RestaurantRatingService;
-import dev.resto.fal.util.OauthUsername;
+import dev.resto.fal.util.OauthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -22,7 +22,7 @@ public class RestaurantRatingController {
 
     @GetMapping("/{restaurantUsername}")
     public List<RestaurantRatingResponse> getRestaurantTags(@AuthenticationPrincipal OAuth2User principal, @PathVariable String restaurantUsername) {
-        return restaurantRatingService.getRestaurantTags(OauthUsername.getId(principal), restaurantUsername);
+        return restaurantRatingService.getRestaurantTags(OauthHelper.getId(principal), restaurantUsername);
     }
 
 }

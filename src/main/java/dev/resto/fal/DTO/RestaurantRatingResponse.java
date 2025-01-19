@@ -1,7 +1,6 @@
-package dev.resto.fal.response;
+package dev.resto.fal.DTO;
 
 import dev.resto.fal.entity.Tag;
-import dev.resto.fal.enums.TagType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

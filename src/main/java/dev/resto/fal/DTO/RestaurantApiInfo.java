@@ -1,4 +1,4 @@
-package dev.resto.fal.response;
+package dev.resto.fal.DTO;
 
 import lombok.*;
 
@@ -11,13 +11,13 @@ import java.util.List;
 @ToString
 public class RestaurantApiInfo {
 
-    private String name;
-    private String formattedAddress;
+    private String restaurantName;
+    private String restaurantAddress;
     private String placeId;
-    private String url;
+    private String googleMapUrl;
     private String website;
-    private String formattedPhoneNumber;
-    private String photoUrl;
+    private String phoneNumber;
+    private String imageUrl;
     private List<String> weekdayText;
     private String restaurantUsername;
 

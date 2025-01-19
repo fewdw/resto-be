@@ -1,5 +1,9 @@
 package dev.resto.fal.controller;
 
+import dev.resto.fal.util.OauthHelper;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,8 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class RootController {
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public String root() {
-        return "";
+        return "{\"RestoMtl\":\"Hello World!\"}";
+    }
+
+    @GetMapping("/test")
+    public String test(@AuthenticationPrincipal OAuth2User principal) {
+        return OauthHelper.getEmail(principal);
     }
 }

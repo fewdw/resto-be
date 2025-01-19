@@ -1,4 +1,4 @@
-package dev.resto.fal.request;
+package dev.resto.fal.DTO;
 
 import dev.resto.fal.enums.FavoriteAction;
 import lombok.AllArgsConstructor;

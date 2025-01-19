@@ -2,7 +2,7 @@ package dev.resto.fal.service;
 
 import dev.resto.fal.entity.Tag;
 import dev.resto.fal.repository.TagRepository;
-import dev.resto.fal.request.AddTag;
+import dev.resto.fal.DTO.AddTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

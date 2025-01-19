@@ -2,13 +2,12 @@ package dev.resto.fal.service;
 
 import dev.resto.fal.entity.*;
 import dev.resto.fal.repository.*;
-import dev.resto.fal.response.RestaurantRatingResponse;
+import dev.resto.fal.DTO.RestaurantRatingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RestaurantRatingService {

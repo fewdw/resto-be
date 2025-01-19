@@ -1,4 +1,4 @@
-package dev.resto.fal.request;
+package dev.resto.fal.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

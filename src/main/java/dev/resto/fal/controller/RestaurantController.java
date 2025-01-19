@@ -1,11 +1,10 @@
 package dev.resto.fal.controller;
 
-import dev.resto.fal.response.RestaurantApiInfo;
-import dev.resto.fal.request.FilterRequest;
-import dev.resto.fal.response.RestaurantSearch;
-import dev.resto.fal.response.RestaurantThumbnail;
+import dev.resto.fal.DTO.*;
+import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.service.RestaurantService;
-import dev.resto.fal.util.OauthUsername;
+import dev.resto.fal.util.Authenticate;
+import dev.resto.fal.util.OauthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,27 +21,43 @@ public class RestaurantController {
     @Autowired
     RestaurantService restaurantService;
 
+    @Autowired
+    Authenticate authenticate;
+
     @GetMapping("/search")
-    public ResponseEntity<List<RestaurantSearch>> searchRestaurants(@AuthenticationPrincipal OAuth2User principal, @RequestParam(required = true) String query){
-        List<RestaurantSearch> response = restaurantService.searchRestaurants(query, OauthUsername.getId(principal));
+    public ResponseEntity<List<AddRestaurantThumbnail>> searchRestaurants(@AuthenticationPrincipal OAuth2User principal, @RequestParam(required = true) String query) throws IOException {
+        authenticate.isUserAuthenticated(principal);
+        List<AddRestaurantThumbnail> response = restaurantService.searchRestaurants(query);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<RestaurantApiInfo> addRestaurant(@AuthenticationPrincipal OAuth2User principal, @RequestParam(required = true) String placeId) throws IOException {
-        RestaurantApiInfo restaurant =  restaurantService.addRestaurant(placeId, OauthUsername.getId(principal));
-        return ResponseEntity.ok(restaurant);
+    public ResponseEntity<Void> addRestaurant(@AuthenticationPrincipal OAuth2User principal, @RequestParam(required = true) String placeId) throws IOException {
+        authenticate.isUserAuthenticated(principal);
+        restaurantService.addRestaurant(placeId, OauthHelper.getId(principal));
+        return ResponseEntity.ok().build();
     }
 
+    @GetMapping("exists/{restaurantUsername}")
+    public ResponseEntity<Boolean> userExistsByUsername(@AuthenticationPrincipal OAuth2User principal, @PathVariable String restaurantUsername) {
+        authenticate.isUserAuthenticated(principal);
+        if(!restaurantService.restaurantExistsByUsername(restaurantUsername)){
+            throw new NotFoundException("Restaurant does not exist");
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    // TODO return also user who added it :D
     @GetMapping("/{restaurantUsername}")
-    public RestaurantApiInfo getRestaurant(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String restaurantUsername) throws IOException {
-        return restaurantService.getRestaurant(restaurantUsername, OauthUsername.getId(principal));
+    public RestaurantInfoPage getRestaurant(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String restaurantUsername) throws IOException {
+        return restaurantService.getRestaurant(restaurantUsername, OauthHelper.getId(principal));
     }
 
     //TODO: add limit of 20 restaurants
     @PostMapping("/thumbnails-search")
-    public ResponseEntity<List<RestaurantThumbnail>> getFilteredThumbnails(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterRequest filterRequest){
-        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getFilteredThumbnails(OauthUsername.getId(principal), filterRequest);
+    public ResponseEntity<List<RestaurantThumbnailOld>> getFilteredThumbnails(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterRequest filterRequest){
+        List<RestaurantThumbnailOld> restaurantThumbnails = restaurantService.getFilteredThumbnails(OauthHelper.getId(principal), filterRequest);
 
         return ResponseEntity.ok(restaurantThumbnails);
     }

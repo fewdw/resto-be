@@ -27,7 +27,7 @@ public class BucketService {
         this.s3Client = s3Client;
     }
 
-    public String putObjectIntoBucket(String imageUrl, String placeId) throws IOException {
+    public String putObjectIntoBucket(String location ,String imageUrl, String placeId) throws IOException {
         URL url = new URL(imageUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -39,13 +39,13 @@ public class BucketService {
 
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
-                    .key("thumbnails/" + placeId)
+                    .key(location + placeId)
                     .contentType("image/jpeg")
                     .build();
 
             s3Client.putObject(putObjectRequest, RequestBody.fromBytes(imageBytes));
 
-            return s3Url + "thumbnails/" + placeId;
+            return s3Url + location + placeId;
         }
     }
 

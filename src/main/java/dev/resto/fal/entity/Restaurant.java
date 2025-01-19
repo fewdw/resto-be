@@ -1,15 +1,11 @@
 package dev.resto.fal.entity;
 
-import dev.resto.fal.response.RestaurantRatingResponse;
-import dev.resto.fal.response.ThumbnailRatingResponse;
+import dev.resto.fal.DTO.ThumbnailRatingResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity

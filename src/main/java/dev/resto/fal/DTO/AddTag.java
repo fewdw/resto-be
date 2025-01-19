@@ -1,4 +1,4 @@
-package dev.resto.fal.request;
+package dev.resto.fal.DTO;
 
 import dev.resto.fal.enums.TagType;
 import jakarta.validation.constraints.NotEmpty;

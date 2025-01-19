@@ -37,12 +37,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String name = (String) oAuth2User.getAttributes().get("name");
         String picture = (String) oAuth2User.getAttributes().get("picture");
 
-        String username = UsernameGenerator.generateRandomUsername();
-        while (userService.userExistsByUsername(username)) {
-            username = UsernameGenerator.generateRandomUsername();
-        }
-
         if (!userService.userExists(email)) {
+
+            String username = UsernameGenerator.generateRandomUsername();
+            while (userService.userExistsByUsername(username)) {
+                username = UsernameGenerator.generateRandomUsername();
+            }
+
             User newUser = new User(id, email, name, picture, username, LocalDate.now(), 0);
             userService.addUser(newUser);
         }
