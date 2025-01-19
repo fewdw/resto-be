@@ -48,17 +48,16 @@ public class RestaurantController {
         return ResponseEntity.ok().build();
     }
 
-    // TODO return also user who added it :D
     @GetMapping("/{restaurantUsername}")
-    public RestaurantInfoPage getRestaurant(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String restaurantUsername) throws IOException {
-        return restaurantService.getRestaurant(restaurantUsername, OauthHelper.getId(principal));
+    public ResponseEntity<RestaurantInfoPage> getRestaurant(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String restaurantUsername) throws IOException {
+        authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(restaurantService.getRestaurant(restaurantUsername));
     }
 
-    //TODO: add limit of 20 restaurants
-    @PostMapping("/thumbnails-search")
-    public ResponseEntity<List<RestaurantThumbnailOld>> getFilteredThumbnails(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterRequest filterRequest){
-        List<RestaurantThumbnailOld> restaurantThumbnails = restaurantService.getFilteredThumbnails(OauthHelper.getId(principal), filterRequest);
-
+    @PostMapping("/thumbnails-search/{page}")
+    public ResponseEntity<List<RestaurantThumbnail>> getFilteredThumbnails(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterRequest filterRequest, @PathVariable int page) {
+        authenticate.isUserAuthenticated(principal);
+        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getFilteredThumbnails(OauthHelper.getId(principal), filterRequest, page);
         return ResponseEntity.ok(restaurantThumbnails);
     }
 

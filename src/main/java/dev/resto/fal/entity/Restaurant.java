@@ -1,6 +1,6 @@
 package dev.resto.fal.entity;
 
-import dev.resto.fal.DTO.ThumbnailRatingResponse;
+import dev.resto.fal.DTO.RestaurantThumbnailRating;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Setter
 @AllArgsConstructor
 @ToString
-public class Restaurant {
+public class Restaurant implements Comparable<Restaurant> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,9 +58,9 @@ public class Restaurant {
         this.ratings.add(rating);
     }
 
-    public List<ThumbnailRatingResponse> getAllTagsFromRatings() {
+    public List<RestaurantThumbnailRating> getAllTagsFromRatings() {
         return ratings.stream()
-                .map(ratings -> new ThumbnailRatingResponse(
+                .map(ratings -> new RestaurantThumbnailRating(
                         ratings.getTag(),
                         ratings.getVotes()
                 )).collect(Collectors.toList());
@@ -78,5 +78,10 @@ public class Restaurant {
         this.user = user;
         this.dateAdded = dateAdded;
         this.username = username;
+    }
+
+    @Override
+    public int compareTo(Restaurant o) {
+        return this.numberOfReviews - o.numberOfReviews;
     }
 }

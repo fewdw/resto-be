@@ -1,5 +1,6 @@
 package dev.resto.fal.service;
 
+import dev.resto.fal.DTO.RestaurantThumbnailOld;
 import dev.resto.fal.enums.FavoriteAction;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.entity.User;
@@ -9,7 +10,6 @@ import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
 import dev.resto.fal.DTO.UserFavorite;
 import dev.resto.fal.DTO.NavbarResponse;
-import dev.resto.fal.DTO.RestaurantThumbnailOld;
 import dev.resto.fal.DTO.UserProfileResponse;
 import dev.resto.fal.util.OauthHelper;
 import org.springframework.beans.factory.annotation.Autowired;

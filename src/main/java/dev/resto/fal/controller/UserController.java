@@ -1,8 +1,8 @@
 package dev.resto.fal.controller;
 
+import dev.resto.fal.DTO.RestaurantThumbnailOld;
 import dev.resto.fal.DTO.UserFavorite;
 import dev.resto.fal.DTO.NavbarResponse;
-import dev.resto.fal.DTO.RestaurantThumbnailOld;
 import dev.resto.fal.DTO.UserProfileResponse;
 import dev.resto.fal.service.UserService;
 import dev.resto.fal.util.OauthHelper;

@@ -1,7 +1,6 @@
 package dev.resto.fal.DTO;
 
 import dev.resto.fal.entity.Tag;
-import dev.resto.fal.enums.SortBy;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +17,4 @@ public class FilterRequest {
     private String searchBar;
     private boolean strictTags;
     private List<Tag> tags;
-    private SortBy sortBy;
-
 }

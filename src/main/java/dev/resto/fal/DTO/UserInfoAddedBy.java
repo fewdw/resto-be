@@ -1,16 +1,16 @@
 package dev.resto.fal.DTO;
 
-import dev.resto.fal.entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
-public class ThumbnailRatingResponse {
-    private Tag tag;
-    private int votes;
+public class UserInfoAddedBy {
+    private String name;
+    private String username;
+    private String profilePictureUrl;
 }
