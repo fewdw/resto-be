@@ -76,17 +76,7 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        return user.getFavorites().stream()
-                .map(restaurant -> new RestaurantThumbnail(
-                        restaurant.getPhotoUrl(),
-                        true,
-                        restaurant.getName(),
-                        restaurant.getUsername(),
-                        restaurant.getAddress(),
-                        restaurant.getAllTagsFromRatings()
-                ))
-                .sorted()
-                .collect(Collectors.toList());
+        // TODO: create table which includes date of added favorite.
     }
 
     public List<RestaurantThumbnail> getRestaurantsAdded(String username, int page) {
