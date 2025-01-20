@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 public class RatingRequest {
 
-    private String placeId;
+    private String restaurantUsername;
     private String tagName;
     @JsonProperty("is_like")
     private boolean isLike;

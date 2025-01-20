@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfileResponse {
+public class UserProfile {
     private String name;
     private String picture;
     private String username;
+    private boolean isOwner;
 }

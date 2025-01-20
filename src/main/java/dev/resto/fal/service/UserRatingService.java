@@ -1,6 +1,7 @@
 package dev.resto.fal.service;
 
 import dev.resto.fal.entity.*;
+import dev.resto.fal.exceptions.ConflictException;
 import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.repository.*;
 import dev.resto.fal.DTO.RatingRequest;
@@ -25,38 +26,38 @@ public class UserRatingService {
     @Autowired
     private RestaurantRatingRepository restaurantRatingRepository;
 
-    public ResponseEntity<String> leaveRating(String userId, RatingRequest ratingRequest) {
+    public ResponseEntity<Void> leaveRating(String userId, RatingRequest ratingRequest) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        Restaurant restaurant = restaurantRepository.findByUsername(ratingRequest.getPlaceId())
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        Restaurant restaurant = restaurantRepository.findByUsername(ratingRequest.getRestaurantUsername())
+                .orElseThrow(() -> new NotFoundException("Restaurant not found"));
 
         Tag tag = tagRepository.findByName(ratingRequest.getTagName())
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
+                .orElseThrow(() -> new NotFoundException("Tag not found"));
 
         boolean exists = userRatingRepository.existsByUserAndRestaurantAndTag(user, restaurant, tag);
 
         if (!exists && ratingRequest.isLike()) {
             addRating(user, restaurant, tag);
-            return ResponseEntity.ok("Rating saved");
+            return ResponseEntity.ok().build();
         }
 
         if (exists && !ratingRequest.isLike()) {
             removeRating(user, restaurant, tag);
-            return ResponseEntity.ok("Rating deleted");
+            return ResponseEntity.ok().build();
         }
 
         if (exists && ratingRequest.isLike()) {
-            return ResponseEntity.badRequest().body("Rating already exists");
+            throw new ConflictException("Rating already exists");
         }
 
         if (!exists && !ratingRequest.isLike()) {
-            return ResponseEntity.badRequest().body("Rating does not exist");
+            throw new ConflictException("Rating does not exist");
         }
 
-        return ResponseEntity.badRequest().body("Something went wrong");
+        throw new ConflictException("Something went wrong");
     }
 
     private void addRating(User user, Restaurant restaurant, Tag tag) {

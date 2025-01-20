@@ -15,9 +15,8 @@ public class Authenticate {
 
     public void isUserAuthenticated(OAuth2User principal) {
         if(principal == null){
-            throw new ForbiddenException("User not authenticated");
+            throw new NotFoundException("User not authenticated");
         }
-
         if(!userService.userExists(OauthHelper.getEmail(principal))){
             throw new NotFoundException("Your account does not exist");
         }

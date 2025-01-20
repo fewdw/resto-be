@@ -2,6 +2,7 @@ package dev.resto.fal.controller;
 
 import dev.resto.fal.DTO.RatingRequest;
 import dev.resto.fal.service.UserRatingService;
+import dev.resto.fal.util.Authenticate;
 import dev.resto.fal.util.OauthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,12 @@ public class UserRatingController {
     @Autowired
     private UserRatingService userRatingService;
 
+    @Autowired
+    Authenticate authenticate;
+
     @PostMapping
-    public ResponseEntity<String> leaveRating(@AuthenticationPrincipal OAuth2User principal, @RequestBody RatingRequest ratingRequest) {
+    public ResponseEntity<Void> leaveRating(@AuthenticationPrincipal OAuth2User principal, @RequestBody RatingRequest ratingRequest) {
+        authenticate.isUserAuthenticated(principal);
         return userRatingService.leaveRating(OauthHelper.getId(principal), ratingRequest);
     }
 

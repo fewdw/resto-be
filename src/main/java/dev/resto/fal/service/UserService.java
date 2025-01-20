@@ -4,17 +4,14 @@ import dev.resto.fal.DTO.RestaurantThumbnailOld;
 import dev.resto.fal.enums.FavoriteAction;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.entity.User;
-import dev.resto.fal.exceptions.AuthenticationException;
+import dev.resto.fal.exceptions.ConflictException;
 import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
 import dev.resto.fal.DTO.UserFavorite;
-import dev.resto.fal.DTO.NavbarResponse;
-import dev.resto.fal.DTO.UserProfileResponse;
-import dev.resto.fal.util.OauthHelper;
+import dev.resto.fal.DTO.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,47 +26,43 @@ public class UserService {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
-    public boolean userExists(String email){
-        return userRepository.findByEmail(email).isPresent();
+    public boolean userExists(String email){ return userRepository.findByEmail(email).isPresent(); }
+
+    public boolean userExistsByUsername(String username){ return userRepository.existsByUsername(username); }
+
+    public void addUser(User newUser) { userRepository.save(newUser); }
+
+    public UserProfile getProfile(String userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        return new UserProfile(user.getName(), user.getPicture(), user.getUsername(), true);
     }
 
-    public boolean userExistsByUsername(String username){return userRepository.existsByUsername(username);}
+    public UserProfile getUserProfile(String requesterId, String profileUsername){
 
-    public void addUser(User newUser) {
-        userRepository.save(newUser);
+        User requester = userRepository.findById(requesterId).orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userRepository.findByUsername(profileUsername).orElseThrow(() -> new NotFoundException("User not found"));
+
+        return new UserProfile(user.getName(), user.getPicture(), user.getUsername(), user.equals(requester));
     }
 
-    public NavbarResponse getNavbar(OAuth2User principal) {
-
-        if (principal == null) {
-            // You can throw an exception or return an appropriate response
-            throw new AuthenticationException("User not authenticated");
-        }
-
-        String userId = OauthHelper.getId(principal);
-        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
-
-        return new NavbarResponse(user.getName(), user.getPicture(), user.getUsername());
-    }
-
-    public ResponseEntity<String> addFavorite(String userId, UserFavorite userFavorite) {
+    public ResponseEntity<Void> addFavorite(String userId, UserFavorite userFavorite) {
 
         User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
-        Restaurant restaurant = restaurantRepository.findByPlaceId(userFavorite.getPlaceId()).orElseThrow(()-> new RuntimeException("Restaurant not found"));// TODO HANDLE CUSTOM
+        Restaurant restaurant = restaurantRepository.findByUsername(userFavorite.getRestaurantUsername()).orElseThrow(()-> new NotFoundException("Restaurant not found"));
 
         if (userFavorite.getAction() == FavoriteAction.ADD && !user.getFavorites().contains(restaurant)) {
             user.getFavorites().add(restaurant);
             userRepository.save(user);
-            return ResponseEntity.ok().body("Restaurant added to favorites");
+            return ResponseEntity.ok().build();
         }
 
         if (userFavorite.getAction() == FavoriteAction.REMOVE && user.getFavorites().contains(restaurant)) {
             user.getFavorites().remove(restaurant);
             userRepository.save(user);
-            return ResponseEntity.ok().body("Restaurant removed");
+            return ResponseEntity.ok().build();
         }
 
-        return ResponseEntity.badRequest().body("Something went wrong");
+        throw new ConflictException("We could not add the restaurant to your favorites");
 
     }
 
@@ -111,11 +104,5 @@ public class UserService {
                 ))
                 .sorted()
                 .collect(Collectors.toList());
-    }
-
-    public UserProfileResponse getProfile(String userId, String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
-        return new UserProfileResponse(user.getName(), user.getPicture(), user.getUsername());
-
     }
 }

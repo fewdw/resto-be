@@ -12,5 +12,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserFavorite {
     FavoriteAction action;
-    String placeId;
+    String restaurantUsername;
 }

@@ -2,7 +2,6 @@ package dev.resto.fal.service;
 
 import dev.resto.fal.entity.Tag;
 import dev.resto.fal.repository.TagRepository;
-import dev.resto.fal.DTO.AddTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +15,6 @@ public class TagService {
 
     public List<Tag> getAllTags() {
         return tagRepository.findAll();
-    }
-
-    public Tag addTag(AddTag tag) {
-        return tagRepository.save(new Tag(tag.getName(), tag.getType(), tag.getEmoji()));
     }
 
 }

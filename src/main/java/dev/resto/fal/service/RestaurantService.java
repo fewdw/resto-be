@@ -3,7 +3,7 @@ package dev.resto.fal.service;
 import dev.resto.fal.DTO.*;
 import dev.resto.fal.client.RestaurantApiClient;
 import dev.resto.fal.entity.Restaurant;
-import dev.resto.fal.exceptions.RestaurantAddLimitException;
+import dev.resto.fal.exceptions.ConflictException;
 import dev.resto.fal.exceptions.RestaurantAlreadyExistsException;
 import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.entity.User;
@@ -83,7 +83,7 @@ public class RestaurantService {
         );
 
         if (user.getNumberOfRestaurantsAdded() >= RESTAURANT_ADD_LIMIT) {
-            throw new RestaurantAddLimitException("Restaurant add limit reached");
+            throw new ConflictException("Restaurant add limit reached");
         }
 
         String s3ImageUrl = bucketService.putObjectIntoBucket("thumbnails/", restaurantApiInfo.getImageUrl(), restaurantApiInfo.getPlaceId());
