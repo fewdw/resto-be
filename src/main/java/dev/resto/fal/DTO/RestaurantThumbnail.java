@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestaurantThumbnail {
+public class RestaurantThumbnail{
 
     private String restaurantImage;
     private boolean isLikedByUser;

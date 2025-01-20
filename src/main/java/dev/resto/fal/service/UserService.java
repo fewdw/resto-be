@@ -11,6 +11,9 @@ import dev.resto.fal.repository.UserRepository;
 import dev.resto.fal.DTO.UserFavorite;
 import dev.resto.fal.DTO.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,9 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private RestaurantRepository restaurantRepository;
+
+    @Value("${restaurant.pages-limit}")
+    private int RESTAURANTS_PER_PAGE;
 
     public boolean userExists(String email){ return userRepository.findByEmail(email).isPresent(); }
 
@@ -66,7 +72,7 @@ public class UserService {
 
     }
 
-    public List<RestaurantThumbnail> getFavorites(String username) {
+    public List<RestaurantThumbnail> getFavorites(String username, int page) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
@@ -83,21 +89,22 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public List<RestaurantThumbnail> getRestaurantsAdded(String userId, String username) {
+    public List<RestaurantThumbnail> getRestaurantsAdded(String username, int page) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
 
-        List<Restaurant> restaurants = restaurantRepository.findAllByUser(user);
+        Pageable pageable = PageRequest.of(page, RESTAURANTS_PER_PAGE);
+
+        List<Restaurant> restaurants = restaurantRepository.findAllByUserOrderByDateAdded(user, pageable);
 
         return restaurants.stream()
                 .map(restaurant -> new RestaurantThumbnail(
                         restaurant.getPhotoUrl(),
-                        userRepository.findById(userId).get().getFavorites().contains(restaurant),
+                        userRepository.findByUsername(username).get().getFavorites().contains(restaurant),
                         restaurant.getName(),
                         restaurant.getUsername(),
                         restaurant.getAddress(),
                         restaurant.getAllTagsFromRatings()
                 ))
-                .sorted()
                 .collect(Collectors.toList());
     }
 }
