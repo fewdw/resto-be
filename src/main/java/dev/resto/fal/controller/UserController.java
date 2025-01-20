@@ -56,7 +56,6 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    // TODO: Add pagination
     @GetMapping("/favorites/{username}/{page}")
     public ResponseEntity<List<RestaurantThumbnail>> getFavorites(@AuthenticationPrincipal OAuth2User principal,
                                                                   @PathVariable(required = true) String username,

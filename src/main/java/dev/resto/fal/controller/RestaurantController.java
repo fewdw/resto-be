@@ -34,12 +34,11 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public ResponseEntity<Void> addRestaurant(@AuthenticationPrincipal OAuth2User principal,
+    public ResponseEntity<RestaurantThumbnail> addRestaurant(@AuthenticationPrincipal OAuth2User principal,
                                               @RequestParam(required = true) String placeId) throws IOException {
 
         authenticate.isUserAuthenticated(principal);
-        restaurantService.addRestaurant(placeId, OauthHelper.getId(principal));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(restaurantService.addRestaurant(placeId, OauthHelper.getId(principal)));
     }
 
     @GetMapping("exists/{restaurantUsername}")
@@ -58,7 +57,7 @@ public class RestaurantController {
     public ResponseEntity<RestaurantInfoPage> getRestaurant(@AuthenticationPrincipal OAuth2User principal,
                                                             @PathVariable(required = true) String restaurantUsername) throws IOException {
         authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(restaurantService.getRestaurant(restaurantUsername));
+        return ResponseEntity.ok(restaurantService.getRestaurant(OauthHelper.getId(principal), restaurantUsername));
     }
 
     @PostMapping("/thumbnails-search/{page}")

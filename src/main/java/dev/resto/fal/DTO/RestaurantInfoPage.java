@@ -12,4 +12,5 @@ import lombok.Setter;
 public class RestaurantInfoPage {
     private RestaurantApiInfo restaurantApiInfo;
     private UserInfoAddedBy userInfoAddedBy;
+    private boolean likedByUser;
 }

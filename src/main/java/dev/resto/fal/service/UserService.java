@@ -1,11 +1,13 @@
 package dev.resto.fal.service;
 
 import dev.resto.fal.DTO.RestaurantThumbnail;
+import dev.resto.fal.entity.Favorites;
 import dev.resto.fal.enums.FavoriteAction;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.entity.User;
 import dev.resto.fal.exceptions.ConflictException;
 import dev.resto.fal.exceptions.NotFoundException;
+import dev.resto.fal.repository.FavoritesRepository;
 import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
 import dev.resto.fal.DTO.UserFavorite;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private RestaurantRepository restaurantRepository;
+    @Autowired
+    private FavoritesRepository favoritesRepository;
 
     @Value("${restaurant.pages-limit}")
     private int RESTAURANTS_PER_PAGE;
@@ -56,15 +61,15 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
         Restaurant restaurant = restaurantRepository.findByUsername(userFavorite.getRestaurantUsername()).orElseThrow(()-> new NotFoundException("Restaurant not found"));
 
-        if (userFavorite.getAction() == FavoriteAction.ADD && !user.getFavorites().contains(restaurant)) {
-            user.getFavorites().add(restaurant);
+        if (userFavorite.getAction() == FavoriteAction.ADD && !favoritesRepository.existsByUserAndRestaurant(user, restaurant)) {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            favoritesRepository.save(new Favorites(user, restaurant, currentDateTime));
             userRepository.save(user);
             return ResponseEntity.ok().build();
         }
 
-        if (userFavorite.getAction() == FavoriteAction.REMOVE && user.getFavorites().contains(restaurant)) {
-            user.getFavorites().remove(restaurant);
-            userRepository.save(user);
+        if (userFavorite.getAction() == FavoriteAction.REMOVE && favoritesRepository.existsByUserAndRestaurant(user, restaurant)) {
+            favoritesRepository.deleteByUserAndRestaurant(user, restaurant);
             return ResponseEntity.ok().build();
         }
 
@@ -73,10 +78,24 @@ public class UserService {
     }
 
     public List<RestaurantThumbnail> getFavorites(String username, int page) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
 
-        // TODO: create table which includes date of added favorite.
+        Pageable pageable = PageRequest.of(page, RESTAURANTS_PER_PAGE);
+
+        List<Restaurant> restaurants = restaurantRepository.findAllByUserOrderByDateAdded(user, pageable);
+
+        return restaurants.stream()
+                .map(restaurant -> new RestaurantThumbnail(
+                        restaurant.getPhotoUrl(),
+                        true,
+                        restaurant.getName(),
+                        restaurant.getUsername(),
+                        restaurant.getAddress(),
+                        restaurant.getAllTagsFromRatings()
+                ))
+                .collect(Collectors.toList());
+
+
     }
 
     public List<RestaurantThumbnail> getRestaurantsAdded(String username, int page) {
@@ -89,7 +108,7 @@ public class UserService {
         return restaurants.stream()
                 .map(restaurant -> new RestaurantThumbnail(
                         restaurant.getPhotoUrl(),
-                        userRepository.findByUsername(username).get().getFavorites().contains(restaurant),
+                        favoritesRepository.existsByUserAndRestaurant(user, restaurant),
                         restaurant.getName(),
                         restaurant.getUsername(),
                         restaurant.getAddress(),

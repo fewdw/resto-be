@@ -1,1 +1,0 @@
-create table which includes date of added favorite in UserService

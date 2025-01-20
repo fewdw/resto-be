@@ -7,6 +7,7 @@ import dev.resto.fal.exceptions.ConflictException;
 import dev.resto.fal.exceptions.RestaurantAlreadyExistsException;
 import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.entity.User;
+import dev.resto.fal.repository.FavoritesRepository;
 import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
 import dev.resto.fal.specification.RestaurantSpecification;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +49,8 @@ public class RestaurantService {
 
     @Autowired
     private BucketService bucketService;
+    @Autowired
+    private FavoritesRepository favoritesRepository;
 
 
     public List<AddRestaurantThumbnail> searchRestaurants(String userId, String query) throws IOException {
@@ -73,7 +77,7 @@ public class RestaurantService {
 
     }
 
-    public void addRestaurant(String placeId, String userId) throws IOException {
+    public RestaurantThumbnail addRestaurant(String placeId, String userId) throws IOException {
 
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User not found")
@@ -120,8 +124,16 @@ public class RestaurantService {
 
         user.setNumberOfRestaurantsAdded(user.getNumberOfRestaurantsAdded() + 1);
         userRepository.save(user);
-
         restaurantRepository.save(newRestaurant);
+
+        return new RestaurantThumbnail(
+                s3ImageUrl,
+                false,
+                restaurantApiInfo.getRestaurantName(),
+                restaurantUsername,
+                restaurantApiInfo.getRestaurantAddress(),
+                Collections.emptyList()
+        );
     }
 
     private boolean userCanAddRestaurant(String userId) {
@@ -131,7 +143,7 @@ public class RestaurantService {
         return user.getNumberOfRestaurantsAdded() < RESTAURANT_ADD_LIMIT;
     }
 
-    public RestaurantInfoPage getRestaurant(String restaurantUsername) {
+    public RestaurantInfoPage getRestaurant(String userId, String restaurantUsername) {
 
         Restaurant restaurant = restaurantRepository.findByUsername(restaurantUsername).orElseThrow(
                 () -> new NotFoundException("Restaurant not found")
@@ -154,7 +166,11 @@ public class RestaurantService {
                 restaurant.getWeekdayText(),
                 restaurant.getUsername());
 
-        return new RestaurantInfoPage(restaurantApiInfo, userInfoAddedBy);
+
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("User not found"));
+
+        return new RestaurantInfoPage(restaurantApiInfo, userInfoAddedBy, favoritesRepository.existsByUserAndRestaurant(user, restaurant));
     }
 
     public Boolean restaurantExistsByUsername(String restaurantUsername) {
@@ -203,7 +219,12 @@ public class RestaurantService {
     }
 
     private boolean isRestaurantLikedByUser(Restaurant restaurant, String userId) {
-        return userRepository.findById(userId).get().getFavorites().contains(restaurant);
+
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("User not found")
+        );
+
+        return favoritesRepository.existsByUserAndRestaurant(user, restaurant);
     }
 
 }

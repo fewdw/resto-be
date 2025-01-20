@@ -54,6 +54,9 @@ public class Restaurant implements Comparable<Restaurant> {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RestaurantRating> ratings;
 
+    @OneToMany(mappedBy = "restaurant")
+    private List<Favorites> favorites;
+
     public void addRating(RestaurantRating rating) {
         this.ratings.add(rating);
     }

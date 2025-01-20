@@ -16,4 +16,5 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, J
     List<Restaurant> findAllByUserOrderByDateAdded(User user, Pageable pageable);
     boolean existsByUsername(String username);
     Optional<Restaurant> findByPlaceId(String placeId);
+    List<Restaurant> findAllByOrderByDateAddedDesc(Pageable pageable);
 }
