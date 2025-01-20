@@ -35,22 +35,10 @@ public class RestaurantController {
 
     @GetMapping
     public ResponseEntity<RestaurantThumbnail> addRestaurant(@AuthenticationPrincipal OAuth2User principal,
-                                              @RequestParam(required = true) String placeId) throws IOException {
+                                                             @RequestParam(required = true) String placeId) throws IOException {
 
         authenticate.isUserAuthenticated(principal);
         return ResponseEntity.ok(restaurantService.addRestaurant(placeId, OauthHelper.getId(principal)));
-    }
-
-    @GetMapping("exists/{restaurantUsername}")
-    public ResponseEntity<Boolean> userExistsByUsername(@AuthenticationPrincipal OAuth2User principal,
-                                                        @PathVariable String restaurantUsername) {
-
-        authenticate.isUserAuthenticated(principal);
-        if(!restaurantService.restaurantExistsByUsername(restaurantUsername)){
-            throw new NotFoundException("Restaurant does not exist");
-        }
-
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{restaurantUsername}")

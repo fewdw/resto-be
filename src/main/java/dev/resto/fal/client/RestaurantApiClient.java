@@ -2,6 +2,7 @@ package dev.resto.fal.client;
 
 import dev.resto.fal.DTO.AddRestaurantThumbnail;
 import dev.resto.fal.DTO.RestaurantApiInfo;
+import dev.resto.fal.repository.FavoritesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,8 @@ public class RestaurantApiClient {
 
     @Value("${google.api.key}")
     private String apiKey;
+    @Autowired
+    private FavoritesRepository favoritesRepository;
 
     public List<String> searchRestaurants(String query) {
         String url = String.format("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%s&key=%s", query, apiKey);
@@ -51,13 +54,13 @@ public class RestaurantApiClient {
         return isFoodPlace && typesNotNull;
     }
 
-    public List<AddRestaurantThumbnail> getRestaurantThumbnails(List<String> placeIds) {
+    public List<AddRestaurantThumbnail> getRestaurantThumbnails(String userId, List<String> placeIds, List<String> existingPlaceIds) {
         return placeIds.stream()
-                .map(this::getRestaurantThumbnailInfo)
+                .map(placeId -> getRestaurantThumbnailInfo(userId, placeId, existingPlaceIds))
                 .collect(Collectors.toList());
     }
 
-    private AddRestaurantThumbnail getRestaurantThumbnailInfo(String placeId) {
+    private AddRestaurantThumbnail getRestaurantThumbnailInfo(String userId, String placeId, List<String> existingPlaceIds) {
         String url = String.format("https://maps.googleapis.com/maps/api/place/details/json?place_id=%s&key=%s", placeId, apiKey);
         Map<String, Object> prediction = webClientBuilder.build()
                 .get()
@@ -72,6 +75,8 @@ public class RestaurantApiClient {
         addRestaurantThumbnail.setName((String) result.get("name"));
         addRestaurantThumbnail.setAddress((String) result.get("formatted_address"));
         addRestaurantThumbnail.setPlaceId((String) result.get("place_id"));
+        addRestaurantThumbnail.setAdded(existingPlaceIds.contains(addRestaurantThumbnail.getPlaceId()));
+        addRestaurantThumbnail.setLikedByUser(favoritesRepository.existsByUserIdAndRestaurantPlaceId(userId, addRestaurantThumbnail.getPlaceId()));
 
         List<Map<String, Object>> photos = (List<Map<String, Object>>) result.get("photos");
         if (photos != null && !photos.isEmpty()) {

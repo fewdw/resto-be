@@ -14,4 +14,6 @@ public class AddRestaurantThumbnail {
     private String address;
     private String imageUrl;
     private String placeId;
+    private boolean added;
+    private boolean likedByUser;
 }

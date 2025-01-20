@@ -65,9 +65,11 @@ public class RestaurantService {
 
         List<String> placeIds = restaurantApiClient.searchRestaurants(query);
 
-        placeIds.removeIf(placeId -> restaurantRepository.existsByPlaceId(placeId));
+        List<String> existingPlaceIds = placeIds.stream()
+                .filter(placeId -> restaurantRepository.existsByPlaceId(placeId))
+                .toList();
 
-        List<AddRestaurantThumbnail> addRestaurantThumbnailList = restaurantApiClient.getRestaurantThumbnails(placeIds);
+        List<AddRestaurantThumbnail> addRestaurantThumbnailList = restaurantApiClient.getRestaurantThumbnails(userId, placeIds, existingPlaceIds);
 
         for (AddRestaurantThumbnail addRestaurantThumbnail : addRestaurantThumbnailList) {
             addRestaurantThumbnail.setImageUrl(bucketService.putObjectIntoBucket("search/", addRestaurantThumbnail.getImageUrl(), addRestaurantThumbnail.getPlaceId()));
@@ -79,9 +81,7 @@ public class RestaurantService {
 
     public RestaurantThumbnail addRestaurant(String placeId, String userId) throws IOException {
 
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("User not found")
-        );
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         if (user.getNumberOfRestaurantsAdded() >= RESTAURANT_ADD_LIMIT) {
             throw new ConflictException("Restaurant add limit reached, please invite your friends to the app!");
@@ -146,7 +146,7 @@ public class RestaurantService {
     public RestaurantInfoPage getRestaurant(String userId, String restaurantUsername) {
 
         Restaurant restaurant = restaurantRepository.findByUsername(restaurantUsername).orElseThrow(
-                () -> new NotFoundException("Restaurant not found")
+                () -> new NotFoundException("Restaurant does not exist")
         );
 
         UserInfoAddedBy userInfoAddedBy = new UserInfoAddedBy(

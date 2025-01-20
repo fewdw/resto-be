@@ -2,7 +2,6 @@ package dev.resto.fal.service;
 
 import dev.resto.fal.DTO.RestaurantThumbnail;
 import dev.resto.fal.entity.Favorites;
-import dev.resto.fal.enums.FavoriteAction;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.entity.User;
 import dev.resto.fal.exceptions.ConflictException;
@@ -56,54 +55,13 @@ public class UserService {
         return new UserProfile(user.getName(), user.getPicture(), user.getUsername(), user.equals(requester));
     }
 
-    public ResponseEntity<Void> addFavorite(String userId, UserFavorite userFavorite) {
-
-        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
-        Restaurant restaurant = restaurantRepository.findByUsername(userFavorite.getRestaurantUsername()).orElseThrow(()-> new NotFoundException("Restaurant not found"));
-
-        if (userFavorite.getAction() == FavoriteAction.ADD && !favoritesRepository.existsByUserAndRestaurant(user, restaurant)) {
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            favoritesRepository.save(new Favorites(user, restaurant, currentDateTime));
-            userRepository.save(user);
-            return ResponseEntity.ok().build();
-        }
-
-        if (userFavorite.getAction() == FavoriteAction.REMOVE && favoritesRepository.existsByUserAndRestaurant(user, restaurant)) {
-            favoritesRepository.deleteByUserAndRestaurant(user, restaurant);
-            return ResponseEntity.ok().build();
-        }
-
-        throw new ConflictException("We could not add the restaurant to your favorites");
-
-    }
-
-    public List<RestaurantThumbnail> getFavorites(String username, int page) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
-
-        Pageable pageable = PageRequest.of(page, RESTAURANTS_PER_PAGE);
-
-        List<Restaurant> restaurants = restaurantRepository.findAllByUserOrderByDateAdded(user, pageable);
-
-        return restaurants.stream()
-                .map(restaurant -> new RestaurantThumbnail(
-                        restaurant.getPhotoUrl(),
-                        true,
-                        restaurant.getName(),
-                        restaurant.getUsername(),
-                        restaurant.getAddress(),
-                        restaurant.getAllTagsFromRatings()
-                ))
-                .collect(Collectors.toList());
-
-
-    }
 
     public List<RestaurantThumbnail> getRestaurantsAdded(String username, int page) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
 
         Pageable pageable = PageRequest.of(page, RESTAURANTS_PER_PAGE);
 
-        List<Restaurant> restaurants = restaurantRepository.findAllByUserOrderByDateAdded(user, pageable);
+        List<Restaurant> restaurants = restaurantRepository.findAllByUserOrderByDateAddedDesc(user, pageable);
 
         return restaurants.stream()
                 .map(restaurant -> new RestaurantThumbnail(

@@ -40,32 +40,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserProfile(OauthHelper.getId(principal), profileUsername));
     }
 
-    @GetMapping("exists/{username}")
-    public ResponseEntity<Void> userExistsByUsername(@AuthenticationPrincipal OAuth2User principal, @PathVariable String username) {
-        authenticate.isUserAuthenticated(principal);
-        if(!userService.userExistsByUsername(username)){
-            throw new NotFoundException("User does not exist");
-        }
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/favorite")
-    public ResponseEntity<Void> addFavorite(@AuthenticationPrincipal OAuth2User principal, @RequestBody UserFavorite userFavorite) {
-        authenticate.isUserAuthenticated(principal);
-        userService.addFavorite(OauthHelper.getId(principal), userFavorite);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/favorites/{username}/{page}")
-    public ResponseEntity<List<RestaurantThumbnail>> getFavorites(@AuthenticationPrincipal OAuth2User principal,
-                                                                  @PathVariable(required = true) String username,
-                                                                  @PathVariable(required = true) int page) {
-
-        authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(userService.getFavorites(username, page));
-    }
-
-
     @GetMapping("/added/{username}/{page}")
     public ResponseEntity<List<RestaurantThumbnail>> getRestaurantsAdded(@AuthenticationPrincipal OAuth2User principal,
                                                                          @PathVariable(required = true) String username,

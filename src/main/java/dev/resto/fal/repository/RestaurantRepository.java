@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, JpaSpecificationExecutor<Restaurant> {
     boolean existsByPlaceId(String placeId);
     Optional<Restaurant> findByUsername(String placeId);
-    List<Restaurant> findAllByUserOrderByDateAdded(User user, Pageable pageable);
+    List<Restaurant> findAllByUserOrderByDateAddedDesc(User user, Pageable pageable);
     boolean existsByUsername(String username);
     Optional<Restaurant> findByPlaceId(String placeId);
     List<Restaurant> findAllByOrderByDateAddedDesc(Pageable pageable);

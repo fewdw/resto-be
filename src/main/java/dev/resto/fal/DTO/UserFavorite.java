@@ -1,6 +1,6 @@
 package dev.resto.fal.DTO;
 
-import dev.resto.fal.enums.FavoriteAction;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserFavorite {
-    FavoriteAction action;
+    @JsonProperty("is_favorite")
+    boolean isFavorite;
     String restaurantUsername;
 }
