@@ -18,14 +18,13 @@ import java.util.List;
 @RequestMapping("/api/favorites")
 public class FavoritesController {
 
-    @Autowired
-    UserService userService;
+    private final Authenticate authenticate;
+    private final FavoritesService favoritesService;
 
-    @Autowired
-    Authenticate authenticate;
-
-    @Autowired
-    FavoritesService favoritesService;
+    public FavoritesController(Authenticate authenticate, FavoritesService favoritesService) {
+        this.authenticate = authenticate;
+        this.favoritesService = favoritesService;
+    }
 
     @PostMapping("/favorite")
     public ResponseEntity<Void> addFavorite(@AuthenticationPrincipal OAuth2User principal, @RequestBody UserFavorite userFavorite) {

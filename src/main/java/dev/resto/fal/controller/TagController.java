@@ -14,11 +14,13 @@ import java.util.List;
 @RequestMapping("/api/tags")
 public class TagController {
 
-    @Autowired
-    Authenticate authenticate;
+    private final Authenticate authenticate;
+    private final TagService tagService;
 
-    @Autowired
-    private TagService tagService;
+    public TagController(Authenticate authenticate, TagService tagService) {
+        this.authenticate = authenticate;
+        this.tagService = tagService;
+    }
 
     @GetMapping
     public List<Tag> getAllTags(@AuthenticationPrincipal OAuth2User principal) {

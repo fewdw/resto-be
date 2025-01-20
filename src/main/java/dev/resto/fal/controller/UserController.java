@@ -20,13 +20,16 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private Authenticate authenticate;
-
     @Value("${restaurant.pages-limit}")
     private int RESTAURANTS_PER_PAGE;
+
+    private final UserService userService;
+    private final Authenticate authenticate;
+
+    public UserController(UserService userService, Authenticate authenticate) {
+        this.userService = userService;
+        this.authenticate = authenticate;
+    }
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfile> getProfile(@AuthenticationPrincipal OAuth2User principal) {

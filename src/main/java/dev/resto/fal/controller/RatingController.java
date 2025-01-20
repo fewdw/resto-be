@@ -18,14 +18,15 @@ import java.util.List;
 @RequestMapping("/api/ratings")
 public class RatingController {
 
-    @Autowired
-    private UserRatingService userRatingService;
+    private final UserRatingService userRatingService;
+    private final RestaurantRatingService restaurantRatingService;
+    private final Authenticate authenticate;
 
-    @Autowired
-    RestaurantRatingService restaurantRatingService;
-
-    @Autowired
-    Authenticate authenticate;
+    public RatingController(UserRatingService userRatingService, RestaurantRatingService restaurantRatingService, Authenticate authenticate) {
+        this.userRatingService = userRatingService;
+        this.restaurantRatingService = restaurantRatingService;
+        this.authenticate = authenticate;
+    }
 
     @GetMapping("/{restaurantUsername}")
     public List<RestaurantRatingResponse> getRestaurantTags(@AuthenticationPrincipal OAuth2User principal, @PathVariable String restaurantUsername) {

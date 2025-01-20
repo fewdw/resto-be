@@ -18,11 +18,13 @@ import java.util.List;
 @RequestMapping("/api/restaurants")
 public class RestaurantController {
 
-    @Autowired
-    RestaurantService restaurantService;
+    private final RestaurantService restaurantService;
+    private final Authenticate authenticate;
 
-    @Autowired
-    Authenticate authenticate;
+    public RestaurantController(RestaurantService restaurantService, Authenticate authenticate) {
+        this.restaurantService = restaurantService;
+        this.authenticate = authenticate;
+    }
 
     @GetMapping("/search")
     public ResponseEntity<List<AddRestaurantThumbnail>> searchRestaurants(@AuthenticationPrincipal OAuth2User principal,
