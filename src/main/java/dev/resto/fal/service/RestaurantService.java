@@ -49,7 +49,15 @@ public class RestaurantService {
     private BucketService bucketService;
 
 
-    public List<AddRestaurantThumbnail> searchRestaurants(String query) throws IOException {
+    public List<AddRestaurantThumbnail> searchRestaurants(String userId, String query) throws IOException {
+
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("User not found")
+        );
+
+        if (user.getNumberOfRestaurantsAdded() >= RESTAURANT_ADD_LIMIT) {
+            throw new ConflictException("Restaurant add limit reached, please invite your friends to the app!");
+        }
 
         List<String> placeIds = restaurantApiClient.searchRestaurants(query);
 
@@ -67,6 +75,14 @@ public class RestaurantService {
 
     public void addRestaurant(String placeId, String userId) throws IOException {
 
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("User not found")
+        );
+
+        if (user.getNumberOfRestaurantsAdded() >= RESTAURANT_ADD_LIMIT) {
+            throw new ConflictException("Restaurant add limit reached, please invite your friends to the app!");
+        }
+
         if (restaurantRepository.existsByPlaceId(placeId)) {
             throw new RestaurantAlreadyExistsException("Restaurant already exists");
         }
@@ -76,14 +92,6 @@ public class RestaurantService {
             restaurantApiInfo = restaurantApiClient.getRestaurantInfo(placeId);
         } catch (Exception e) {
             throw new NotFoundException("Restaurant not found");
-        }
-
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("User not found")
-        );
-
-        if (user.getNumberOfRestaurantsAdded() >= RESTAURANT_ADD_LIMIT) {
-            throw new ConflictException("Restaurant add limit reached");
         }
 
         String s3ImageUrl = bucketService.putObjectIntoBucket("thumbnails/", restaurantApiInfo.getImageUrl(), restaurantApiInfo.getPlaceId());
@@ -114,6 +122,13 @@ public class RestaurantService {
         userRepository.save(user);
 
         restaurantRepository.save(newRestaurant);
+    }
+
+    private boolean userCanAddRestaurant(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("User not found")
+        );
+        return user.getNumberOfRestaurantsAdded() < RESTAURANT_ADD_LIMIT;
     }
 
     public RestaurantInfoPage getRestaurant(String restaurantUsername) {

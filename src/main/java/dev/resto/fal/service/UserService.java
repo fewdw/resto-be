@@ -1,6 +1,6 @@
 package dev.resto.fal.service;
 
-import dev.resto.fal.DTO.RestaurantThumbnailOld;
+import dev.resto.fal.DTO.RestaurantThumbnail;
 import dev.resto.fal.enums.FavoriteAction;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.entity.User;
@@ -66,41 +66,36 @@ public class UserService {
 
     }
 
-    public List<RestaurantThumbnailOld> getFavorites(String userId, String username) {
+    public List<RestaurantThumbnail> getFavorites(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         return user.getFavorites().stream()
-                .map(restaurant -> new RestaurantThumbnailOld(
+                .map(restaurant -> new RestaurantThumbnail(
                         restaurant.getPhotoUrl(),
+                        true,
                         restaurant.getName(),
-                        restaurant.getPlaceId(),
+                        restaurant.getUsername(),
                         restaurant.getAddress(),
-                        userRepository.findById(userId).get().getFavorites().contains(restaurant),
-                        restaurant.getAllTagsFromRatings(),
-                        restaurant.getDateAdded(),
-                        restaurant.getUsername()
+                        restaurant.getAllTagsFromRatings()
                 ))
                 .sorted()
                 .collect(Collectors.toList());
     }
 
-    public List<RestaurantThumbnailOld> getRestaurantsAdded(String userId, String username) {
+    public List<RestaurantThumbnail> getRestaurantsAdded(String userId, String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
 
         List<Restaurant> restaurants = restaurantRepository.findAllByUser(user);
 
         return restaurants.stream()
-                .map(restaurant -> new RestaurantThumbnailOld(
+                .map(restaurant -> new RestaurantThumbnail(
                         restaurant.getPhotoUrl(),
-                        restaurant.getName(),
-                        restaurant.getPlaceId(),
-                        restaurant.getAddress(),
                         userRepository.findById(userId).get().getFavorites().contains(restaurant),
-                        restaurant.getAllTagsFromRatings(),
-                        restaurant.getDateAdded(),
-                        restaurant.getUsername()
-
+                        restaurant.getName(),
+                        restaurant.getUsername(),
+                        restaurant.getAddress(),
+                        restaurant.getAllTagsFromRatings()
                 ))
                 .sorted()
                 .collect(Collectors.toList());

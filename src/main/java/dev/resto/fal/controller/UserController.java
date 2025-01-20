@@ -1,6 +1,6 @@
 package dev.resto.fal.controller;
 
-import dev.resto.fal.DTO.RestaurantThumbnailOld;
+import dev.resto.fal.DTO.RestaurantThumbnail;
 import dev.resto.fal.DTO.UserFavorite;
 import dev.resto.fal.DTO.UserProfile;
 import dev.resto.fal.exceptions.NotFoundException;
@@ -8,6 +8,7 @@ import dev.resto.fal.service.UserService;
 import dev.resto.fal.util.Authenticate;
 import dev.resto.fal.util.OauthHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -23,6 +24,9 @@ public class UserController {
     private UserService userService;
     @Autowired
     private Authenticate authenticate;
+
+    @Value("${restaurant.pages-limit}")
+    private int RESTAURANTS_PER_PAGE;
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfile> getProfile(@AuthenticationPrincipal OAuth2User principal) {
@@ -52,18 +56,22 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    //TODO: add limit of 20
-    //TODO: LAST ONES
-    @GetMapping("/favorites/{username}")
-    public ResponseEntity<List<RestaurantThumbnailOld>> getFavorites(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String username) {
-        return ResponseEntity.ok(userService.getFavorites(OauthHelper.getId(principal), username));
+    @GetMapping("/favorites/{username}/{page}")
+    public ResponseEntity<List<RestaurantThumbnail>> getFavorites(@AuthenticationPrincipal OAuth2User principal,
+                                                                  @PathVariable(required = true) String username,
+                                                                  @PathVariable(required = true) int page) {
+
+        authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(userService.getFavorites(username));
     }
 
 
-    //TODO: add limit of 20
-    //TODO: LAST ONES
-    @GetMapping("/restaurants-added/{username}")
-    public ResponseEntity<List<RestaurantThumbnailOld>> getRestaurantsAdded(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String username) {
+    @GetMapping("/added/{username}/{page}")
+    public ResponseEntity<List<RestaurantThumbnail>> getRestaurantsAdded(@AuthenticationPrincipal OAuth2User principal,
+                                                                         @PathVariable(required = true) String username,
+                                                                         @PathVariable(required = true) int page) {
+
+        authenticate.isUserAuthenticated(principal);
         return ResponseEntity.ok(userService.getRestaurantsAdded(OauthHelper.getId(principal), username));
     }
 

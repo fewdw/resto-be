@@ -25,21 +25,27 @@ public class RestaurantController {
     Authenticate authenticate;
 
     @GetMapping("/search")
-    public ResponseEntity<List<AddRestaurantThumbnail>> searchRestaurants(@AuthenticationPrincipal OAuth2User principal, @RequestParam(required = true) String query) throws IOException {
+    public ResponseEntity<List<AddRestaurantThumbnail>> searchRestaurants(@AuthenticationPrincipal OAuth2User principal,
+                                                                          @RequestParam(required = true) String query) throws IOException {
+
         authenticate.isUserAuthenticated(principal);
-        List<AddRestaurantThumbnail> response = restaurantService.searchRestaurants(query);
+        List<AddRestaurantThumbnail> response = restaurantService.searchRestaurants(OauthHelper.getId(principal), query);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<Void> addRestaurant(@AuthenticationPrincipal OAuth2User principal, @RequestParam(required = true) String placeId) throws IOException {
+    public ResponseEntity<Void> addRestaurant(@AuthenticationPrincipal OAuth2User principal,
+                                              @RequestParam(required = true) String placeId) throws IOException {
+
         authenticate.isUserAuthenticated(principal);
         restaurantService.addRestaurant(placeId, OauthHelper.getId(principal));
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("exists/{restaurantUsername}")
-    public ResponseEntity<Boolean> userExistsByUsername(@AuthenticationPrincipal OAuth2User principal, @PathVariable String restaurantUsername) {
+    public ResponseEntity<Boolean> userExistsByUsername(@AuthenticationPrincipal OAuth2User principal,
+                                                        @PathVariable String restaurantUsername) {
+
         authenticate.isUserAuthenticated(principal);
         if(!restaurantService.restaurantExistsByUsername(restaurantUsername)){
             throw new NotFoundException("Restaurant does not exist");
@@ -49,13 +55,16 @@ public class RestaurantController {
     }
 
     @GetMapping("/{restaurantUsername}")
-    public ResponseEntity<RestaurantInfoPage> getRestaurant(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String restaurantUsername) throws IOException {
+    public ResponseEntity<RestaurantInfoPage> getRestaurant(@AuthenticationPrincipal OAuth2User principal,
+                                                            @PathVariable(required = true) String restaurantUsername) throws IOException {
         authenticate.isUserAuthenticated(principal);
         return ResponseEntity.ok(restaurantService.getRestaurant(restaurantUsername));
     }
 
     @PostMapping("/thumbnails-search/{page}")
-    public ResponseEntity<List<RestaurantThumbnail>> getFilteredThumbnails(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterRequest filterRequest, @PathVariable int page) {
+    public ResponseEntity<List<RestaurantThumbnail>> getFilteredThumbnails(@AuthenticationPrincipal OAuth2User principal,
+                                                                           @RequestBody FilterRequest filterRequest,
+                                                                           @PathVariable int page) {
         authenticate.isUserAuthenticated(principal);
         List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getFilteredThumbnails(OauthHelper.getId(principal), filterRequest, page);
         return ResponseEntity.ok(restaurantThumbnails);
