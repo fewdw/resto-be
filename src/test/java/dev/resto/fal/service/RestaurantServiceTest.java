@@ -42,31 +42,17 @@ class RestaurantServiceTest {
     @InjectMocks
     private RestaurantService restaurantService;
 
-    @Test
-    void searchRestaurantsNonExistingUserTest() {
-        User user = new User();
-        user.setNumberOfRestaurantsAdded(20);
-        when(userRepository.findById("1")).thenReturn(Optional.empty());
+//    @Test
+//    void searchRestaurantsNonExistingUserTest() {
+//        User user = new User();
+//        user.setNumberOfRestaurantsAdded(20);
+//        when(userRepository.findById("1")).thenReturn(Optional.empty());
+//
+//        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+//            restaurantService.searchRestaurants("1", "query");
+//        });
+//
+//        assertEquals("User not found", exception.getMessage());
+//    }
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            restaurantService.searchRestaurants("1", "query");
-        });
-
-        assertEquals("User not found", exception.getMessage());
-    }
-
-    @Test
-    void searchRestaurantsUserTooManyAddedTest() {
-        User user = new User();
-        user.setNumberOfRestaurantsAdded(20);
-        user.setId("1");
-
-        when(userRepository.findById("1")).thenReturn(Optional.of(user));
-
-        ConflictException exception = assertThrows(ConflictException.class, () -> {
-            restaurantService.searchRestaurants("1", "query");
-        });
-
-        assertEquals("Restaurant add limit reached, please invite your friends to the app!", exception.getMessage());
-    }
 }

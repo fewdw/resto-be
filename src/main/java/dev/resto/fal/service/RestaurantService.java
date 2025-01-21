@@ -4,6 +4,7 @@ import dev.resto.fal.DTO.*;
 import dev.resto.fal.client.RestaurantApiClient;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.exceptions.ConflictException;
+import dev.resto.fal.exceptions.ForbiddenException;
 import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.entity.User;
 import dev.resto.fal.repository.FavoritesRepository;
@@ -53,7 +54,7 @@ public class RestaurantService {
     public List<AddRestaurantThumbnail> searchRestaurants(String userId, String query) throws IOException {
 
         if (!userCanAddRestaurant(userId)) {
-            throw new ConflictException("Restaurant add limit reached, please invite your friends to the app!");
+            throw new ForbiddenException("Restaurant add limit reached, please invite your friends to the app!");
         }
 
         List<String> placeIds = restaurantApiClient.searchRestaurants(query);
@@ -77,7 +78,7 @@ public class RestaurantService {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         if (user.getNumberOfRestaurantsAdded() >= RESTAURANT_ADD_LIMIT) {
-            throw new ConflictException("Restaurant add limit reached, please invite your friends to the app!");
+            throw new ForbiddenException("Restaurant add limit reached, please invite your friends to the app!");
         }
 
         if (restaurantRepository.existsByPlaceId(placeId)) {

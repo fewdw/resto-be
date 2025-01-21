@@ -104,9 +104,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.bucket4j</groupId>
-			<artifactId>bucket4j-core</artifactId>
-			<version>8.1.0</version>
+			<groupId>com.giffing.bucket4j.spring.boot.starter</groupId>
+			<artifactId>bucket4j-spring-boot-starter</artifactId>
+			<version>0.12.8</version>
 		</dependency>
 	</dependencies>
 
