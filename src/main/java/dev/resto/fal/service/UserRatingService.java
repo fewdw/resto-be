@@ -28,14 +28,11 @@ public class UserRatingService {
 
     public ResponseEntity<Void> leaveRating(String userId, RatingRequest ratingRequest) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
-        Restaurant restaurant = restaurantRepository.findByUsername(ratingRequest.getRestaurantUsername())
-                .orElseThrow(() -> new NotFoundException("Restaurant not found"));
+        Restaurant restaurant = restaurantRepository.findByUsername(ratingRequest.getRestaurantUsername()).orElseThrow(() -> new NotFoundException("Restaurant not found"));
 
-        Tag tag = tagRepository.findByName(ratingRequest.getTagName())
-                .orElseThrow(() -> new NotFoundException("Tag not found"));
+        Tag tag = tagRepository.findByName(ratingRequest.getTagName()).orElseThrow(() -> new NotFoundException("Tag not found"));
 
         boolean exists = userRatingRepository.existsByUserAndRestaurantAndTag(user, restaurant, tag);
 
@@ -77,8 +74,7 @@ public class UserRatingService {
         UserRating userRating = userRatingRepository.findByUserAndRestaurantAndTag(user, restaurant, tag);
         userRatingRepository.delete(userRating);
 
-        RestaurantRating restaurantRating = restaurantRatingRepository.findByRestaurantAndTagName(restaurant, tag.getName())
-                .orElseThrow(() -> new RuntimeException("Restaurant rating not found"));
+        RestaurantRating restaurantRating = restaurantRatingRepository.findByRestaurantAndTagName(restaurant, tag.getName()).orElseThrow(() -> new NotFoundException("Restaurant rating not found"));
 
         restaurantRating.setVotes(restaurantRating.getVotes() - 1);
         restaurant.setNumberOfReviews(restaurant.getNumberOfReviews() - 1);

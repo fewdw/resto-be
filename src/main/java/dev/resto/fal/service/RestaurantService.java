@@ -4,7 +4,6 @@ import dev.resto.fal.DTO.*;
 import dev.resto.fal.client.RestaurantApiClient;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.exceptions.ConflictException;
-import dev.resto.fal.exceptions.RestaurantAlreadyExistsException;
 import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.entity.User;
 import dev.resto.fal.repository.FavoritesRepository;
@@ -82,7 +81,7 @@ public class RestaurantService {
         }
 
         if (restaurantRepository.existsByPlaceId(placeId)) {
-            throw new RestaurantAlreadyExistsException("Restaurant already exists");
+            throw new ConflictException("Restaurant already exists");
         }
 
         RestaurantApiInfo restaurantApiInfo = new RestaurantApiInfo();

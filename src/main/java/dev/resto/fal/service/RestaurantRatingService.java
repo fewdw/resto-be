@@ -29,15 +29,13 @@ public class RestaurantRatingService {
 
     public List<RestaurantRatingResponse> getRestaurantTags(String userId, String restaurantUsername) {
 
-        Restaurant restaurant = restaurantRepository.findByUsername(restaurantUsername)
-                .orElseThrow(() -> new NotFoundException("Restaurant not found"));
-
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("User not found"));
+        Restaurant restaurant = restaurantRepository.findByUsername(restaurantUsername).orElseThrow(() -> new NotFoundException("Restaurant not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         List<RestaurantRating> restaurantRatings = restaurantRatingRepository.findAllByRestaurant(restaurant);
 
         List<UserRating> userRatings = userRatingRepository.findAllByUserAndRestaurant(user, restaurant);
+
         List<Tag> userTags = userRatings.stream().map(UserRating::getTag).toList();
 
         List<Tag> allTags = tagRepository.findAll();
@@ -63,7 +61,5 @@ public class RestaurantRatingService {
         }
 
         return restaurantRatingsList;
-
-
     }
 }

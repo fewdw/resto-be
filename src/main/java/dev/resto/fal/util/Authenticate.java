@@ -1,7 +1,7 @@
 package dev.resto.fal.util;
 
-import dev.resto.fal.exceptions.ForbiddenException;
 import dev.resto.fal.exceptions.NotFoundException;
+import dev.resto.fal.exceptions.UnauthorizedException;
 import dev.resto.fal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -15,10 +15,10 @@ public class Authenticate {
 
     public void isUserAuthenticated(OAuth2User principal) {
         if(principal == null){
-            throw new NotFoundException("User not authenticated");
+            throw new UnauthorizedException("You are not authenticated.");
         }
         if(!userService.userExists(OauthHelper.getEmail(principal))){
-            throw new NotFoundException("Your account does not exist");
+            throw new NotFoundException("Your account was not found.");
         }
     }
 }

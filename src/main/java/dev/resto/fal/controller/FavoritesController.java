@@ -25,7 +25,9 @@ public class FavoritesController {
     }
 
     @PostMapping("/favorite")
-    public ResponseEntity<Void> addFavorite(@AuthenticationPrincipal OAuth2User principal, @RequestBody UserFavorite userFavorite) {
+    public ResponseEntity<Void> addFavorite(@AuthenticationPrincipal OAuth2User principal,
+                                            @RequestBody UserFavorite userFavorite) {
+
         authenticate.isUserAuthenticated(principal);
         favoritesService.addFavorite(OauthHelper.getId(principal), userFavorite);
         return ResponseEntity.ok().build();

@@ -35,7 +35,8 @@ public class UserController {
     }
 
     @GetMapping("/profile/{profileUsername}")
-    public ResponseEntity<UserProfile> getUserProfile(@AuthenticationPrincipal OAuth2User principal, @PathVariable(required = true) String profileUsername) {
+    public ResponseEntity<UserProfile> getUserProfile(@AuthenticationPrincipal OAuth2User principal,
+                                                      @PathVariable(required = true) String profileUsername) {
         authenticate.isUserAuthenticated(principal);
         return ResponseEntity.ok(userService.getUserProfile(OauthHelper.getId(principal), profileUsername));
     }

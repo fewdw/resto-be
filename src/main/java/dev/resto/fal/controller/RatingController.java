@@ -28,13 +28,17 @@ public class RatingController {
     }
 
     @GetMapping("/{restaurantUsername}")
-    public List<RestaurantRatingResponse> getRestaurantTags(@AuthenticationPrincipal OAuth2User principal, @PathVariable String restaurantUsername) {
+    public List<RestaurantRatingResponse> getRestaurantTags(@AuthenticationPrincipal OAuth2User principal,
+                                                            @PathVariable String restaurantUsername) {
+
         authenticate.isUserAuthenticated(principal);
         return restaurantRatingService.getRestaurantTags(OauthHelper.getId(principal), restaurantUsername);
     }
 
     @PostMapping
-    public ResponseEntity<Void> leaveRating(@AuthenticationPrincipal OAuth2User principal, @RequestBody RatingRequest ratingRequest) {
+    public ResponseEntity<Void> leaveRating(@AuthenticationPrincipal OAuth2User principal,
+                                            @RequestBody RatingRequest ratingRequest) {
+
         authenticate.isUserAuthenticated(principal);
         return userRatingService.leaveRating(OauthHelper.getId(principal), ratingRequest);
     }
