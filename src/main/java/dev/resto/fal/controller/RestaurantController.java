@@ -1,11 +1,9 @@
 package dev.resto.fal.controller;
 
 import dev.resto.fal.DTO.*;
-import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.service.RestaurantService;
 import dev.resto.fal.util.Authenticate;
 import dev.resto.fal.util.OauthHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;

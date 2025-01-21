@@ -12,7 +12,6 @@ import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
 import dev.resto.fal.specification.RestaurantSpecification;
 import dev.resto.fal.util.UsernameGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,35 +37,30 @@ public class RestaurantService {
     @Value("${tags.per.thumbnail}")
     private int TAGS_PER_THUMBNAIL;
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final RestaurantApiClient restaurantApiClient;
+    private final UserRepository userRepository;
+    private final BucketService bucketService;
+    private final FavoritesRepository favoritesRepository;
 
-    @Autowired
-    private RestaurantApiClient restaurantApiClient;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BucketService bucketService;
-    @Autowired
-    private FavoritesRepository favoritesRepository;
-
+    public RestaurantService(RestaurantRepository restaurantRepository, RestaurantApiClient restaurantApiClient, UserRepository userRepository, BucketService bucketService, FavoritesRepository favoritesRepository) {
+        this.restaurantRepository = restaurantRepository;
+        this.restaurantApiClient = restaurantApiClient;
+        this.userRepository = userRepository;
+        this.bucketService = bucketService;
+        this.favoritesRepository = favoritesRepository;
+    }
 
     public List<AddRestaurantThumbnail> searchRestaurants(String userId, String query) throws IOException {
 
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("User not found")
-        );
-
-        if (user.getNumberOfRestaurantsAdded() >= RESTAURANT_ADD_LIMIT) {
+        if (!userCanAddRestaurant(userId)) {
             throw new ConflictException("Restaurant add limit reached, please invite your friends to the app!");
         }
 
         List<String> placeIds = restaurantApiClient.searchRestaurants(query);
 
         List<String> existingPlaceIds = placeIds.stream()
-                .filter(placeId -> restaurantRepository.existsByPlaceId(placeId))
+                .filter(restaurantRepository::existsByPlaceId)
                 .toList();
 
         List<AddRestaurantThumbnail> addRestaurantThumbnailList = restaurantApiClient.getRestaurantThumbnails(userId, placeIds, existingPlaceIds);

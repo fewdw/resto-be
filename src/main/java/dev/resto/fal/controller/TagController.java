@@ -3,7 +3,6 @@ package dev.resto.fal.controller;
 import dev.resto.fal.entity.Tag;
 import dev.resto.fal.service.TagService;
 import dev.resto.fal.util.Authenticate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;

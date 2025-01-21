@@ -24,17 +24,19 @@ import java.util.stream.Collectors;
 @Service
 public class FavoritesService {
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RestaurantRepository restaurantRepository;
-
-    @Autowired
-    FavoritesRepository favoritesRepository;
-
     @Value("${restaurant.pages-limit}")
     private int RESTAURANTS_PER_PAGE;
+
+    private final UserRepository userRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final FavoritesRepository favoritesRepository;
+
+    public FavoritesService(UserRepository userRepository, RestaurantRepository restaurantRepository, FavoritesRepository favoritesRepository) {
+        this.userRepository = userRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.favoritesRepository = favoritesRepository;
+    }
+
 
     @Transactional
     public void addFavorite(String userId, UserFavorite userFavorite) {

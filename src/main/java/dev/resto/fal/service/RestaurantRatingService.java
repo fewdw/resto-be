@@ -13,21 +13,19 @@ import java.util.List;
 @Service
 public class RestaurantRatingService {
 
-    @Autowired
-    private RestaurantRatingRepository restaurantRatingRepository;
+    private final RestaurantRatingRepository restaurantRatingRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final TagRepository tagRepository;
+    private final UserRatingRepository userRatingRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
-    private UserRatingRepository userRatingRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
+    public RestaurantRatingService(RestaurantRatingRepository restaurantRatingRepository, RestaurantRepository restaurantRepository, TagRepository tagRepository, UserRatingRepository userRatingRepository, UserRepository userRepository) {
+        this.restaurantRatingRepository = restaurantRatingRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.tagRepository = tagRepository;
+        this.userRatingRepository = userRatingRepository;
+        this.userRepository = userRepository;
+    }
 
     public List<RestaurantRatingResponse> getRestaurantTags(String userId, String restaurantUsername) {
 
