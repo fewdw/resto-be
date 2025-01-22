@@ -5,7 +5,6 @@ import dev.resto.fal.DTO.UserFavorite;
 import dev.resto.fal.service.FavoritesService;
 import dev.resto.fal.util.Authenticate;
 import dev.resto.fal.util.OauthHelper;
-import io.github.bucket4j.Bucket;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -34,12 +33,20 @@ public class FavoritesController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{username}/{page}")
+    @GetMapping("/{page}")
     public ResponseEntity<List<RestaurantThumbnail>> getFavorites(@AuthenticationPrincipal OAuth2User principal,
+                                                                  @PathVariable(required = true) int page) {
+
+        authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(favoritesService.getFavoritesById(OauthHelper.getId(principal), page));
+    }
+
+    @GetMapping("/{username}/{page}")
+    public ResponseEntity<List<RestaurantThumbnail>> getFavoritesById(@AuthenticationPrincipal OAuth2User principal,
                                                                   @PathVariable(required = true) String username,
                                                                   @PathVariable(required = true) int page) {
 
         authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(favoritesService.getFavorites(username, page));
+        return ResponseEntity.ok(favoritesService.getFavoritesByUsername(username, page));
     }
 }

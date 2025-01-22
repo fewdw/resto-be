@@ -41,13 +41,21 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserProfile(OauthHelper.getId(principal), profileUsername));
     }
 
-    @GetMapping("/added/{username}/{page}")
+    @GetMapping("/added/{page}")
     public ResponseEntity<List<RestaurantThumbnail>> getRestaurantsAdded(@AuthenticationPrincipal OAuth2User principal,
+                                                                         @PathVariable(required = true) int page) {
+
+        authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(userService.getRestaurantsAddedById(OauthHelper.getId(principal), page));
+    }
+
+    @GetMapping("/added/{username}/{page}")
+    public ResponseEntity<List<RestaurantThumbnail>> getRestaurantsAddedByUsername(@AuthenticationPrincipal OAuth2User principal,
                                                                          @PathVariable(required = true) String username,
                                                                          @PathVariable(required = true) int page) {
 
         authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(userService.getRestaurantsAdded(username, page));
+        return ResponseEntity.ok(userService.getRestaurantsAddedByUsername(username, page));
     }
 
 

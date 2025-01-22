@@ -62,9 +62,19 @@ public class FavoritesService {
 
     }
 
-    public List<RestaurantThumbnail> getFavorites(String username, int page) {
+
+    public List<RestaurantThumbnail> getFavoritesById(String userId, int page) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        return getFavorites(user, page);
+    }
+
+    public List<RestaurantThumbnail> getFavoritesByUsername(String username, int page) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
 
+        return getFavorites(user, page);
+    }
+
+    private List<RestaurantThumbnail> getFavorites(User user, int page) {
         Pageable pageable = PageRequest.of(page, RESTAURANTS_PER_PAGE);
 
         List<Favorites> userFavorites = favoritesRepository.findAllByUserOrderByCreatedAtDesc(user, pageable);
@@ -80,6 +90,5 @@ public class FavoritesService {
                         restaurant.getAllTagsFromRatings()
                 ))
                 .toList();
-
     }
 }

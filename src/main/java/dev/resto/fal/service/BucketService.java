@@ -1,6 +1,5 @@
 package dev.resto.fal.service;
 
-import dev.resto.fal.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;

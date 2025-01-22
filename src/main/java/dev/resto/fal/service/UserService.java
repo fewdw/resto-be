@@ -55,10 +55,17 @@ public class UserService {
         return new UserProfile(user.getName(), user.getPicture(), user.getUsername(), user.equals(requester));
     }
 
+    public List<RestaurantThumbnail> getRestaurantsAddedById(String userId, int page) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        return getAdded(user, page);
+    }
 
-    public List<RestaurantThumbnail> getRestaurantsAdded(String username, int page) {
+    public List<RestaurantThumbnail> getRestaurantsAddedByUsername(String username, int page) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
+        return getAdded(user, page);
+    }
 
+    private List<RestaurantThumbnail> getAdded(User user, int page){
         Pageable pageable = PageRequest.of(page, RESTAURANTS_PER_PAGE);
 
         List<Restaurant> restaurants = restaurantRepository.findAllByUserOrderByDateAddedDesc(user, pageable);
