@@ -51,26 +51,8 @@ public class RestaurantService {
         this.favoritesRepository = favoritesRepository;
     }
 
-    public List<AddRestaurantThumbnail> searchRestaurants(String userId, String query) throws IOException {
-
-        if (!userCanAddRestaurant(userId)) {
-            throw new ForbiddenException("Restaurant add limit reached, please invite your friends to the app!");
-        }
-
-        List<String> placeIds = restaurantApiClient.searchRestaurants(query);
-
-        List<String> existingPlaceIds = placeIds.stream()
-                .filter(restaurantRepository::existsByPlaceId)
-                .toList();
-
-        List<AddRestaurantThumbnail> addRestaurantThumbnailList = restaurantApiClient.getRestaurantThumbnails(userId, placeIds, existingPlaceIds);
-
-        for (AddRestaurantThumbnail addRestaurantThumbnail : addRestaurantThumbnailList) {
-            addRestaurantThumbnail.setImageUrl(bucketService.putObjectIntoBucket("search/", addRestaurantThumbnail.getImageUrl(), addRestaurantThumbnail.getPlaceId()));
-        }
-
-        return addRestaurantThumbnailList;
-
+    public List<RestaurantSearchAutocomplete> searchRestaurants(String userId, String query) throws IOException {
+        return restaurantApiClient.searchRestaurants(query);
     }
 
     public RestaurantThumbnail addRestaurant(String placeId, String userId) throws IOException {

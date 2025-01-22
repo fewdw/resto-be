@@ -2,17 +2,17 @@ package dev.resto.fal.client;
 
 import dev.resto.fal.DTO.AddRestaurantThumbnail;
 import dev.resto.fal.DTO.RestaurantApiInfo;
+import dev.resto.fal.DTO.RestaurantSearchAutocomplete;
+import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.repository.FavoritesRepository;
+import dev.resto.fal.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -26,8 +26,10 @@ public class RestaurantApiClient {
     private String apiKey;
     @Autowired
     private FavoritesRepository favoritesRepository;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
 
-    public List<String> searchRestaurants(String query) {
+    public List<RestaurantSearchAutocomplete> searchRestaurants(String query) {
         String url = String.format("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%s&key=%s", query, apiKey);
         return webClientBuilder.build()
                 .get()
@@ -36,17 +38,34 @@ public class RestaurantApiClient {
                 .bodyToMono(Map.class)
                 .map(response -> (List<Map<String, Object>>) response.get("predictions"))
                 .flatMapMany(Flux::fromIterable)
-                .filter(this::hasFoodType)
-                .map(prediction -> (String) prediction.get("place_id"))
+                .map(this::mapToRestaurantSearchAutocomplete)
                 .collectList()
                 .block();
+    }
+
+    private RestaurantSearchAutocomplete mapToRestaurantSearchAutocomplete(Map<String, Object> prediction) {
+        RestaurantSearchAutocomplete autocomplete = new RestaurantSearchAutocomplete();
+        autocomplete.setPlaceId((String) prediction.get("place_id"));
+        autocomplete.setDescription((String) prediction.get("description"));
+        autocomplete.setAdded(false);
+        autocomplete.setUsername(null);
+
+        Optional<Restaurant> restaurant = restaurantRepository.findByPlaceId(autocomplete.getPlaceId());
+
+
+        if(restaurant.isPresent()) {
+            autocomplete.setAdded(true);
+            autocomplete.setUsername(restaurant.get().getUsername());
+        }
+
+        return autocomplete;
     }
 
 
     private boolean hasFoodType(Map<String, Object> prediction) {
         List<String> types = (List<String>) prediction.get("types");
 
-        Set<String> foodTypes = Set.of("food", "bar", "meal_takeaway", "restaurant", "cafe");
+        Set<String> foodTypes = Set.of("food", "bar", "meal_takeaway", "restaurant", "cafe", "bakery");
         boolean isFoodPlace = !Collections.disjoint(types, foodTypes);
 
         boolean typesNotNull = types != null;

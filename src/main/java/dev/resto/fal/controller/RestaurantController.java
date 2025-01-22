@@ -25,11 +25,11 @@ public class RestaurantController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<AddRestaurantThumbnail>> searchRestaurants(@AuthenticationPrincipal OAuth2User principal,
+    public ResponseEntity<List<RestaurantSearchAutocomplete>> searchRestaurants(@AuthenticationPrincipal OAuth2User principal,
                                                                           @RequestParam(required = true) String query) throws IOException {
 
         authenticate.isUserAuthenticated(principal);
-        List<AddRestaurantThumbnail> response = restaurantService.searchRestaurants(OauthHelper.getId(principal), query);
+        List<RestaurantSearchAutocomplete> response = restaurantService.searchRestaurants(OauthHelper.getId(principal), query);
         return ResponseEntity.ok(response);
     }
 
