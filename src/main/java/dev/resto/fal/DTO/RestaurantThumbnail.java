@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -19,5 +20,4 @@ public class RestaurantThumbnail{
     private String restaurantUsername;
     private String restaurantAddress;
     private List<RestaurantThumbnailRating> ratings;
-
 }

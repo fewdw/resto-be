@@ -17,9 +17,6 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Value("${restaurant.pages-limit}")
-    private int RESTAURANTS_PER_PAGE;
-
     private final UserService userService;
     private final Authenticate authenticate;
 

@@ -197,15 +197,13 @@ public class RestaurantService {
 
         thumbnail.setLikedByUser(isRestaurantLikedByUser(restaurant, userId));
 
-        List<RestaurantThumbnailRating> topRatings = restaurant.getAllTagsFromRatings().stream()
+        List<RestaurantThumbnailRating> topRatings = restaurant.getTopTagsFromRatings().stream()
                 .map(rating -> {
                     RestaurantThumbnailRating thumbRating = new RestaurantThumbnailRating();
                     thumbRating.setTag(rating.getTag());
                     thumbRating.setVotes(rating.getVotes());
                     return thumbRating;
                 })
-                .sorted((r1, r2) -> r2.compareTo(r1))
-                .limit(TAGS_PER_THUMBNAIL)
                 .collect(Collectors.toList());
 
         thumbnail.setRatings(topRatings);

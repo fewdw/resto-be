@@ -3,6 +3,7 @@ package dev.resto.fal.entity;
 import dev.resto.fal.DTO.RestaurantThumbnailRating;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -61,12 +62,12 @@ public class Restaurant implements Comparable<Restaurant> {
         this.ratings.add(rating);
     }
 
-    public List<RestaurantThumbnailRating> getAllTagsFromRatings() {
+    public List<RestaurantThumbnailRating> getTopTagsFromRatings() {
         return ratings.stream()
                 .map(ratings -> new RestaurantThumbnailRating(
                         ratings.getTag(),
                         ratings.getVotes()
-                )).collect(Collectors.toList());
+                )).sorted().limit(7).collect(Collectors.toList());
     }
 
     public Restaurant(String placeId, String name, String address, String link, String website, String phoneNumber, String photoUrl, List<String> weekdayText, User user, LocalDateTime dateAdded, String username) {

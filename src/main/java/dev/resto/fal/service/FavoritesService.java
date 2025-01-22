@@ -10,7 +10,6 @@ import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.repository.FavoritesRepository;
 import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FavoritesService {
@@ -87,7 +85,7 @@ public class FavoritesService {
                         restaurant.getName(),
                         restaurant.getUsername(),
                         restaurant.getAddress(),
-                        restaurant.getAllTagsFromRatings()
+                        restaurant.getTopTagsFromRatings()
                 ))
                 .toList();
     }

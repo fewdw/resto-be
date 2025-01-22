@@ -1,24 +1,19 @@
 package dev.resto.fal.service;
 
 import dev.resto.fal.DTO.RestaurantThumbnail;
-import dev.resto.fal.entity.Favorites;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.entity.User;
-import dev.resto.fal.exceptions.ConflictException;
 import dev.resto.fal.exceptions.NotFoundException;
 import dev.resto.fal.repository.FavoritesRepository;
 import dev.resto.fal.repository.RestaurantRepository;
 import dev.resto.fal.repository.UserRepository;
-import dev.resto.fal.DTO.UserFavorite;
 import dev.resto.fal.DTO.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,7 +72,7 @@ public class UserService {
                         restaurant.getName(),
                         restaurant.getUsername(),
                         restaurant.getAddress(),
-                        restaurant.getAllTagsFromRatings()
+                        restaurant.getTopTagsFromRatings()
                 ))
                 .collect(Collectors.toList());
     }

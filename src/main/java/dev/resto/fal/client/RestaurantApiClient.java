@@ -96,11 +96,11 @@ public class RestaurantApiClient {
                 .uri(url)
                 .retrieve()
                 .bodyToMono(Map.class)
-                .map(this::mapToRestaurantInfo)
+                .map(response -> mapToRestaurantInfo(response, placeId))
                 .block();
     }
 
-    private RestaurantApiInfo mapToRestaurantInfo(Map<String, Object> prediction) {
+    private RestaurantApiInfo mapToRestaurantInfo(Map<String, Object> prediction, String placeId) {
         Map<String, Object> result = (Map<String, Object>) prediction.get("result");
 
         RestaurantApiInfo restaurantApiInfo = new RestaurantApiInfo();
@@ -110,6 +110,7 @@ public class RestaurantApiClient {
         restaurantApiInfo.setImageUrl((String) result.get("url"));
         restaurantApiInfo.setWebsite((String) result.get("website"));
         restaurantApiInfo.setPhoneNumber((String) result.get("formatted_phone_number"));
+        restaurantApiInfo.setPlaceId(placeId);
 
         List<Map<String, Object>> photos = (List<Map<String, Object>>) result.get("photos");
         if (photos != null && !photos.isEmpty()) {

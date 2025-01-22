@@ -27,7 +27,7 @@ public class BucketService {
         this.s3Client = s3Client;
     }
 
-    public String putObjectIntoBucket(String location ,String imageUrl, String placeId) throws IOException {
+    public String putObjectIntoBucket(String location, String imageUrl, String placeId) throws IOException {
 
         if (imageUrl == null || imageUrl.isEmpty()) {
             return null;
