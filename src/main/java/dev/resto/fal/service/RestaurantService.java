@@ -52,7 +52,7 @@ public class RestaurantService {
     }
 
     public List<RestaurantSearchAutocomplete> searchRestaurants(String userId, String query) throws IOException {
-        return restaurantApiClient.searchRestaurants(query);
+        return restaurantApiClient.searchRestaurants(query, userId);
     }
 
     public RestaurantThumbnail addRestaurant(String placeId, String userId) throws IOException {

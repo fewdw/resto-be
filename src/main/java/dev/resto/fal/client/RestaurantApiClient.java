@@ -6,6 +6,7 @@ import dev.resto.fal.DTO.RestaurantSearchAutocomplete;
 import dev.resto.fal.entity.Restaurant;
 import dev.resto.fal.repository.FavoritesRepository;
 import dev.resto.fal.repository.RestaurantRepository;
+import dev.resto.fal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,8 +29,10 @@ public class RestaurantApiClient {
     private FavoritesRepository favoritesRepository;
     @Autowired
     private RestaurantRepository restaurantRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public List<RestaurantSearchAutocomplete> searchRestaurants(String query) {
+    public List<RestaurantSearchAutocomplete> searchRestaurants(String query, String userId) {
         String url = String.format("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%s&key=%s", query, apiKey);
         return webClientBuilder.build()
                 .get()
@@ -38,12 +41,12 @@ public class RestaurantApiClient {
                 .bodyToMono(Map.class)
                 .map(response -> (List<Map<String, Object>>) response.get("predictions"))
                 .flatMapMany(Flux::fromIterable)
-                .map(this::mapToRestaurantSearchAutocomplete)
+                .map(prediction -> mapToRestaurantSearchAutocomplete(prediction, userId))
                 .collectList()
                 .block();
     }
 
-    private RestaurantSearchAutocomplete mapToRestaurantSearchAutocomplete(Map<String, Object> prediction) {
+    private RestaurantSearchAutocomplete mapToRestaurantSearchAutocomplete(Map<String, Object> prediction, String userId) {
         RestaurantSearchAutocomplete autocomplete = new RestaurantSearchAutocomplete();
         autocomplete.setPlaceId((String) prediction.get("place_id"));
         autocomplete.setDescription((String) prediction.get("description"));
@@ -56,6 +59,7 @@ public class RestaurantApiClient {
         if(restaurant.isPresent()) {
             autocomplete.setAdded(true);
             autocomplete.setUsername(restaurant.get().getUsername());
+            autocomplete.setLikedByUser(favoritesRepository.existsByUserIdAndRestaurantUsername(userId, restaurant.get().getUsername()));
         }
 
         return autocomplete;

@@ -14,5 +14,6 @@ public class RestaurantSearchAutocomplete {
     private String description;
     private String username;
     private boolean isAdded;
+    private boolean isLikedByUser;
 
 }
