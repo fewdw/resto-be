@@ -21,6 +21,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long>, J
     @Query("SELECT r FROM Restaurant r ORDER BY r.dateAdded DESC")
     List<Restaurant> findAllOrderByDateAddedDesc(Pageable pageable);
 
-    @Query("SELECT r FROM Restaurant r ORDER BY r.numberOfReviews DESC")
+    @Query("SELECT r FROM Restaurant r LEFT JOIN r.ratings ratings GROUP BY r ORDER BY COUNT(ratings) DESC")
     List<Restaurant> findAllOrderByNumberOfReviewsDesc(Pageable pageable);
+
 }
