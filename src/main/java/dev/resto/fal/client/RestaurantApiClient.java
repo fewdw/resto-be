@@ -41,10 +41,12 @@ public class RestaurantApiClient {
                 .bodyToMono(Map.class)
                 .map(response -> (List<Map<String, Object>>) response.get("predictions"))
                 .flatMapMany(Flux::fromIterable)
+                .filter(this::hasFoodType) // Filter predictions to include only relevant types
                 .map(prediction -> mapToRestaurantSearchAutocomplete(prediction, userId))
                 .collectList()
                 .block();
     }
+
 
     private RestaurantSearchAutocomplete mapToRestaurantSearchAutocomplete(Map<String, Object> prediction, String userId) {
         RestaurantSearchAutocomplete autocomplete = new RestaurantSearchAutocomplete();
@@ -68,14 +70,12 @@ public class RestaurantApiClient {
 
     private boolean hasFoodType(Map<String, Object> prediction) {
         List<String> types = (List<String>) prediction.get("types");
+        if (types == null) return false;
 
-        Set<String> foodTypes = Set.of("food", "bar", "meal_takeaway", "restaurant", "cafe", "bakery");
-        boolean isFoodPlace = !Collections.disjoint(types, foodTypes);
-
-        boolean typesNotNull = types != null;
-
-        return isFoodPlace && typesNotNull;
+        Set<String> foodTypes = Set.of("food", "bar", "meal_takeaway", "restaurant", "cafe");
+        return !Collections.disjoint(types, foodTypes);
     }
+
 
     public List<AddRestaurantThumbnail> getRestaurantThumbnails(String userId, List<String> placeIds, List<String> existingPlaceIds) {
         return placeIds.stream()
