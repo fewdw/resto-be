@@ -57,5 +57,21 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantThumbnails);
     }
 
+    @GetMapping("/new/{page}")
+    public ResponseEntity<List<RestaurantThumbnail>> getNewThumbnails(@AuthenticationPrincipal OAuth2User principal,
+                                                                      @PathVariable int page) {
+        authenticate.isUserAuthenticated(principal);
+        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getNewThumbnails(OauthHelper.getId(principal), page);
+        return ResponseEntity.ok(restaurantThumbnails);
+    }
+
+    @GetMapping("/popular/{page}")
+    public ResponseEntity<List<RestaurantThumbnail>> getPopularThumbnails(@AuthenticationPrincipal OAuth2User principal,
+                                                                          @PathVariable int page) {
+        authenticate.isUserAuthenticated(principal);
+        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getPopularThumbnails(OauthHelper.getId(principal), page);
+        return ResponseEntity.ok(restaurantThumbnails);
+    }
+
 
 }

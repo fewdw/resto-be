@@ -170,6 +170,23 @@ public class RestaurantService {
                 .collect(Collectors.toList());
     }
 
+
+    public List<RestaurantThumbnail> getNewThumbnails(String userId, int page) {
+        List<Restaurant> restaurants = restaurantRepository.findAllOrderByDateAddedDesc(PageRequest.of(page, RESTAURANTS_PER_PAGE));
+        return restaurants.stream()
+                .map(restaurant -> convertToThumbnail(restaurant, userId))
+                .collect(Collectors.toList());
+    }
+
+
+    public List<RestaurantThumbnail> getPopularThumbnails(String id, int page) {
+        List<Restaurant> restaurants = restaurantRepository.findAllOrderByNumberOfReviewsDesc(PageRequest.of(page, RESTAURANTS_PER_PAGE));
+        return restaurants.stream()
+                .map(restaurant -> convertToThumbnail(restaurant, id))
+                .collect(Collectors.toList());
+    }
+
+
     private RestaurantThumbnail convertToThumbnail(Restaurant restaurant, String userId) {
         RestaurantThumbnail thumbnail = new RestaurantThumbnail();
         thumbnail.setRestaurantImage(restaurant.getPhotoUrl());
