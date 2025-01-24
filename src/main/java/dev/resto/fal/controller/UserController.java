@@ -25,6 +25,12 @@ public class UserController {
         this.authenticate = authenticate;
     }
 
+    @GetMapping("/auth")
+    public ResponseEntity<Void> isAuthenticated(@AuthenticationPrincipal OAuth2User principal) {
+        authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/profile")
     public ResponseEntity<UserProfile> getProfile(@AuthenticationPrincipal OAuth2User principal) {
         authenticate.isUserAuthenticated(principal);
