@@ -5,6 +5,7 @@ import dev.resto.fal.DTO.UserProfile;
 import dev.resto.fal.service.UserService;
 import dev.resto.fal.util.Authenticate;
 import dev.resto.fal.util.OauthHelper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,12 +27,13 @@ public class UserController {
     }
 
     @GetMapping("/auth")
-    public ResponseEntity<Void> isAuthenticated(@AuthenticationPrincipal OAuth2User principal) {
-        System.out.print(principal);
-        authenticate.isUserAuthenticated(principal);
-        System.out.println("returning ok");
+    public ResponseEntity<Void> isAuthenticated(@AuthenticationPrincipal OAuth2User principal, HttpServletRequest request) {
+        String sessionId = request.getSession(false) != null ? request.getSession(false).getId() : "No session";
+        System.out.println("Principal: " + principal);
+        System.out.println("Session ID: " + sessionId);
         return ResponseEntity.ok().build();
     }
+
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfile> getProfile(@AuthenticationPrincipal OAuth2User principal) {

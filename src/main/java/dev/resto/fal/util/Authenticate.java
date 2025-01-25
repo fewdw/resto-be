@@ -15,7 +15,6 @@ public class Authenticate {
 
     public void isUserAuthenticated(OAuth2User principal) {
         if(principal == null){
-            System.out.println("null principal");
             throw new UnauthorizedException("You are not authenticated.");
         }
         if(!userService.userExists(OauthHelper.getEmail(principal))){
