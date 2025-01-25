@@ -27,7 +27,9 @@ public class UserController {
 
     @GetMapping("/auth")
     public ResponseEntity<Void> isAuthenticated(@AuthenticationPrincipal OAuth2User principal) {
+        System.out.print(principal);
         authenticate.isUserAuthenticated(principal);
+        System.out.println("returning ok");
         return ResponseEntity.ok().build();
     }
 
