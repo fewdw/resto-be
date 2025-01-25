@@ -28,9 +28,6 @@ public class UserController {
 
     @GetMapping("/auth")
     public ResponseEntity<Void> isAuthenticated(@AuthenticationPrincipal OAuth2User principal, HttpServletRequest request) {
-        String sessionId = request.getSession(false) != null ? request.getSession(false).getId() : "No session";
-        System.out.println("Principal: " + principal);
-        System.out.println("Session ID: " + sessionId);
         return ResponseEntity.ok().build();
     }
 
