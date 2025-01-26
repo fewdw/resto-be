@@ -33,6 +33,11 @@ public class RestaurantApiClient {
     private UserRepository userRepository;
 
     public List<RestaurantSearchAutocomplete> searchRestaurants(String query, String userId) {
+
+        if(!query.toLowerCase().contains("quebec")) {
+            query += " quebec";
+        }
+
         String url = String.format("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%s&key=%s", query, apiKey);
         return webClientBuilder.build()
                 .get()
