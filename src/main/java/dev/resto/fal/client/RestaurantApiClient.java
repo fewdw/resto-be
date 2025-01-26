@@ -133,6 +133,7 @@ public class RestaurantApiClient {
         restaurantApiInfo.setImageUrl((String) result.get("url"));
         restaurantApiInfo.setWebsite((String) result.get("website"));
         restaurantApiInfo.setPhoneNumber((String) result.get("formatted_phone_number"));
+        restaurantApiInfo.setGoogleMapUrl((String) result.get("url"));
         restaurantApiInfo.setPlaceId(placeId);
 
         List<Map<String, Object>> photos = (List<Map<String, Object>>) result.get("photos");
