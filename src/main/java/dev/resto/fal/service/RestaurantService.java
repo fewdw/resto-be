@@ -86,7 +86,7 @@ public class RestaurantService {
                 placeId,
                 restaurantApiInfo.getRestaurantName(),
                 restaurantApiInfo.getRestaurantAddress(),
-                "https://www.google.com/maps/place/?q=place_id:" + placeId,
+                restaurantApiInfo.getGoogleMapUrl(),
                 restaurantApiInfo.getWebsite(),
                 restaurantApiInfo.getPhoneNumber(),
                 s3ImageUrl,
