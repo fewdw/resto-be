@@ -61,8 +61,6 @@ public class RestaurantSpecification {
 
 
     public static Sort sortBy(FilterRequest filterRequest) {
-        // Using the compareTo method in the Restaurant entity for sorting
-        // Sort by the number of reviews or any other field
-        return Sort.by(Sort.Order.asc("name")); // Use custom field if needed
+        return Sort.by(Sort.Order.asc("name"));
     }
 }

@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class FilterRequest {
 
-    private String searchBar;
     private boolean strictTags;
     private List<Tag> tags;
 }
