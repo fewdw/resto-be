@@ -26,9 +26,7 @@ public class UserRatingService {
     @Autowired
     private RestaurantRatingRepository restaurantRatingRepository;
 
-    public ResponseEntity<Void> leaveRating(String userId, RatingRequest ratingRequest) {
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    public ResponseEntity<Void> leaveRating(User user, RatingRequest ratingRequest) {
 
         Restaurant restaurant = restaurantRepository.findByUsername(ratingRequest.getRestaurantUsername()).orElseThrow(() -> new NotFoundException("Restaurant not found"));
 

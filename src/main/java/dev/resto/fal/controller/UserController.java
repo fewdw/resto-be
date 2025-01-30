@@ -2,6 +2,7 @@ package dev.resto.fal.controller;
 
 import dev.resto.fal.DTO.RestaurantThumbnail;
 import dev.resto.fal.DTO.UserProfile;
+import dev.resto.fal.entity.User;
 import dev.resto.fal.service.UserService;
 import dev.resto.fal.util.Authenticate;
 import dev.resto.fal.util.OauthHelper;
@@ -28,29 +29,30 @@ public class UserController {
 
     @GetMapping("/auth")
     public ResponseEntity<Void> isAuthenticated(@AuthenticationPrincipal OAuth2User principal, HttpServletRequest request) {
+        authenticate.isUserAuthenticated(principal);
         return ResponseEntity.ok().build();
     }
 
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfile> getProfile(@AuthenticationPrincipal OAuth2User principal) {
-        authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(userService.getProfile(OauthHelper.getId(principal)));
+        User user = authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(userService.getProfile(user));
     }
 
     @GetMapping("/profile/{profileUsername}")
     public ResponseEntity<UserProfile> getUserProfile(@AuthenticationPrincipal OAuth2User principal,
                                                       @PathVariable(required = true) String profileUsername) {
-        authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(userService.getUserProfile(OauthHelper.getId(principal), profileUsername));
+        User user = authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(userService.getUserProfile(user, profileUsername));
     }
 
     @GetMapping("/added/{page}")
     public ResponseEntity<List<RestaurantThumbnail>> getRestaurantsAdded(@AuthenticationPrincipal OAuth2User principal,
                                                                          @PathVariable(required = true) int page) {
 
-        authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(userService.getRestaurantsAddedById(OauthHelper.getId(principal), page));
+        User user = authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(userService.getRestaurantsAddedById(user, page));
     }
 
     @GetMapping("/added/{username}/{page}")

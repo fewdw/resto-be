@@ -51,13 +51,11 @@ public class RestaurantService {
         this.favoritesRepository = favoritesRepository;
     }
 
-    public List<RestaurantSearchAutocomplete> searchRestaurants(String userId, String query) throws IOException {
-        return restaurantApiClient.searchRestaurants(query, userId);
+    public List<RestaurantSearchAutocomplete> searchRestaurants(User user, String query) throws IOException {
+        return restaurantApiClient.searchRestaurants(query, user.getId());
     }
 
-    public RestaurantThumbnail addRestaurant(String placeId, String userId) throws IOException {
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    public RestaurantThumbnail addRestaurant(String placeId, User user) throws IOException {
 
         if (user.getNumberOfRestaurantsAdded() >= RESTAURANT_ADD_LIMIT) {
             throw new ForbiddenException("Restaurant add limit reached, please invite your friends to the app!");
@@ -119,7 +117,7 @@ public class RestaurantService {
         return user.getNumberOfRestaurantsAdded() < RESTAURANT_ADD_LIMIT;
     }
 
-    public RestaurantInfoPage getRestaurant(String userId, String restaurantUsername) {
+    public RestaurantInfoPage getRestaurant(User user, String restaurantUsername) {
 
         Restaurant restaurant = restaurantRepository.findByUsername(restaurantUsername).orElseThrow(
                 () -> new NotFoundException("Restaurant does not exist")
@@ -142,10 +140,6 @@ public class RestaurantService {
                 restaurant.getWeekdayText(),
                 restaurant.getUsername());
 
-
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("User not found"));
-
         return new RestaurantInfoPage(restaurantApiInfo, userInfoAddedBy, favoritesRepository.existsByUserAndRestaurant(user, restaurant));
     }
 
@@ -156,7 +150,7 @@ public class RestaurantService {
         return true;
     }
 
-    public List<RestaurantThumbnail> getFilteredThumbnails(String userId, FilterRequest filterRequest, int page) {
+    public List<RestaurantThumbnail> getFilteredThumbnails(User user, FilterRequest filterRequest, int page) {
         Specification<Restaurant> spec = Specification
                 .where(RestaurantSpecification.containsSearchBar(filterRequest.getSearchBar()))
                 .and(RestaurantSpecification.hasTags(filterRequest.getTags(), filterRequest.isStrictTags()));
@@ -166,23 +160,23 @@ public class RestaurantService {
         Page<Restaurant> restaurantPage = restaurantRepository.findAll(spec, PageRequest.of(page, RESTAURANTS_PER_PAGE, sort));
 
         return restaurantPage.stream()
-                .map(restaurant -> convertToThumbnail(restaurant, userId))
+                .map(restaurant -> convertToThumbnail(restaurant, user.getId()))
                 .collect(Collectors.toList());
     }
 
 
-    public List<RestaurantThumbnail> getNewThumbnails(String userId, int page) {
+    public List<RestaurantThumbnail> getNewThumbnails(User user, int page) {
         List<Restaurant> restaurants = restaurantRepository.findAllOrderByDateAddedDesc(PageRequest.of(page, RESTAURANTS_PER_PAGE));
         return restaurants.stream()
-                .map(restaurant -> convertToThumbnail(restaurant, userId))
+                .map(restaurant -> convertToThumbnail(restaurant, user.getId()))
                 .collect(Collectors.toList());
     }
 
 
-    public List<RestaurantThumbnail> getPopularThumbnails(String id, int page) {
+    public List<RestaurantThumbnail> getPopularThumbnails(User user, int page) {
         List<Restaurant> restaurants = restaurantRepository.findAllOrderByNumberOfReviewsDesc(PageRequest.of(page, RESTAURANTS_PER_PAGE));
         return restaurants.stream()
-                .map(restaurant -> convertToThumbnail(restaurant, id))
+                .map(restaurant -> convertToThumbnail(restaurant, user.getId()))
                 .collect(Collectors.toList());
     }
 

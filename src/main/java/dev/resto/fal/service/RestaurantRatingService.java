@@ -27,10 +27,9 @@ public class RestaurantRatingService {
         this.userRepository = userRepository;
     }
 
-    public List<RestaurantRatingResponse> getRestaurantTags(String userId, String restaurantUsername) {
+    public List<RestaurantRatingResponse> getRestaurantTags(User user, String restaurantUsername) {
 
         Restaurant restaurant = restaurantRepository.findByUsername(restaurantUsername).orElseThrow(() -> new NotFoundException("Restaurant not found"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
 
         List<RestaurantRating> restaurantRatings = restaurantRatingRepository.findAllByRestaurant(restaurant);
 

@@ -1,6 +1,7 @@
 package dev.resto.fal.controller;
 
 import dev.resto.fal.DTO.*;
+import dev.resto.fal.entity.User;
 import dev.resto.fal.service.RestaurantService;
 import dev.resto.fal.util.Authenticate;
 import dev.resto.fal.util.OauthHelper;
@@ -28,8 +29,8 @@ public class RestaurantController {
     public ResponseEntity<List<RestaurantSearchAutocomplete>> searchRestaurants(@AuthenticationPrincipal OAuth2User principal,
                                                                           @RequestParam(required = true) String query) throws IOException {
 
-        authenticate.isUserAuthenticated(principal);
-        List<RestaurantSearchAutocomplete> response = restaurantService.searchRestaurants(OauthHelper.getId(principal), query);
+        User user = authenticate.isUserAuthenticated(principal);
+        List<RestaurantSearchAutocomplete> response = restaurantService.searchRestaurants(user, query);
         return ResponseEntity.ok(response);
     }
 
@@ -37,39 +38,39 @@ public class RestaurantController {
     public ResponseEntity<RestaurantThumbnail> addRestaurant(@AuthenticationPrincipal OAuth2User principal,
                                                              @RequestParam(required = true) String placeId) throws IOException {
 
-        authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(restaurantService.addRestaurant(placeId, OauthHelper.getId(principal)));
+        User user = authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(restaurantService.addRestaurant(placeId, user));
     }
 
     @GetMapping("/{restaurantUsername}")
     public ResponseEntity<RestaurantInfoPage> getRestaurant(@AuthenticationPrincipal OAuth2User principal,
                                                             @PathVariable(required = true) String restaurantUsername) throws IOException {
-        authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(restaurantService.getRestaurant(OauthHelper.getId(principal), restaurantUsername));
+        User user = authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(restaurantService.getRestaurant(user, restaurantUsername));
     }
 
     @PostMapping("/thumbnails-search/{page}")
     public ResponseEntity<List<RestaurantThumbnail>> getFilteredThumbnails(@AuthenticationPrincipal OAuth2User principal,
                                                                            @RequestBody FilterRequest filterRequest,
                                                                            @PathVariable int page) {
-        authenticate.isUserAuthenticated(principal);
-        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getFilteredThumbnails(OauthHelper.getId(principal), filterRequest, page);
+        User user = authenticate.isUserAuthenticated(principal);
+        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getFilteredThumbnails(user, filterRequest, page);
         return ResponseEntity.ok(restaurantThumbnails);
     }
 
     @GetMapping("/new/{page}")
     public ResponseEntity<List<RestaurantThumbnail>> getNewThumbnails(@AuthenticationPrincipal OAuth2User principal,
                                                                       @PathVariable int page) {
-        authenticate.isUserAuthenticated(principal);
-        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getNewThumbnails(OauthHelper.getId(principal), page);
+        User user = authenticate.isUserAuthenticated(principal);
+        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getNewThumbnails(user, page);
         return ResponseEntity.ok(restaurantThumbnails);
     }
 
     @GetMapping("/popular/{page}")
     public ResponseEntity<List<RestaurantThumbnail>> getPopularThumbnails(@AuthenticationPrincipal OAuth2User principal,
                                                                           @PathVariable int page) {
-        authenticate.isUserAuthenticated(principal);
-        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getPopularThumbnails(OauthHelper.getId(principal), page);
+        User user = authenticate.isUserAuthenticated(principal);
+        List<RestaurantThumbnail> restaurantThumbnails = restaurantService.getPopularThumbnails(user, page);
         return ResponseEntity.ok(restaurantThumbnails);
     }
 

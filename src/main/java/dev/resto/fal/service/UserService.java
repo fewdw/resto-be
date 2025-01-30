@@ -36,22 +36,18 @@ public class UserService {
     public boolean userExistsByUsername(String username){ return userRepository.existsByUsername(username); }
 
     public void addUser(User newUser) { userRepository.save(newUser); }
+    public User getUserById(String userId){ return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found")); }
 
-    public UserProfile getProfile(String userId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    public UserProfile getProfile(User user){
         return new UserProfile(user.getName(), user.getPicture(), user.getUsername(), true);
     }
 
-    public UserProfile getUserProfile(String requesterId, String profileUsername){
-
-        User requester = userRepository.findById(requesterId).orElseThrow(() -> new NotFoundException("User not found"));
+    public UserProfile getUserProfile(User requester, String profileUsername){
         User user = userRepository.findByUsername(profileUsername).orElseThrow(() -> new NotFoundException("User not found"));
-
         return new UserProfile(user.getName(), user.getPicture(), user.getUsername(), user.equals(requester));
     }
 
-    public List<RestaurantThumbnail> getRestaurantsAddedById(String userId, int page) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    public List<RestaurantThumbnail> getRestaurantsAddedById(User user, int page) {
         return getAdded(user, page);
     }
 

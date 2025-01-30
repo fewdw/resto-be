@@ -2,6 +2,7 @@ package dev.resto.fal.controller;
 
 import dev.resto.fal.DTO.RestaurantThumbnail;
 import dev.resto.fal.DTO.UserFavorite;
+import dev.resto.fal.entity.User;
 import dev.resto.fal.service.FavoritesService;
 import dev.resto.fal.util.Authenticate;
 import dev.resto.fal.util.OauthHelper;
@@ -28,8 +29,8 @@ public class FavoritesController {
     public ResponseEntity<Void> addFavorite(@AuthenticationPrincipal OAuth2User principal,
                                             @RequestBody UserFavorite userFavorite) {
 
-        authenticate.isUserAuthenticated(principal);
-        favoritesService.addFavorite(OauthHelper.getId(principal), userFavorite);
+        User user = authenticate.isUserAuthenticated(principal);
+        favoritesService.addFavorite(user, userFavorite);
         return ResponseEntity.ok().build();
     }
 
@@ -37,8 +38,8 @@ public class FavoritesController {
     public ResponseEntity<List<RestaurantThumbnail>> getFavorites(@AuthenticationPrincipal OAuth2User principal,
                                                                   @PathVariable(required = true) int page) {
 
-        authenticate.isUserAuthenticated(principal);
-        return ResponseEntity.ok(favoritesService.getFavoritesById(OauthHelper.getId(principal), page));
+        User user = authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(favoritesService.getFavoritesById(user, page));
     }
 
     @GetMapping("/{username}/{page}")

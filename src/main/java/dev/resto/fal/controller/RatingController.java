@@ -2,6 +2,7 @@ package dev.resto.fal.controller;
 
 import dev.resto.fal.DTO.RatingRequest;
 import dev.resto.fal.DTO.RestaurantRatingResponse;
+import dev.resto.fal.entity.User;
 import dev.resto.fal.service.RestaurantRatingService;
 import dev.resto.fal.service.UserRatingService;
 import dev.resto.fal.util.Authenticate;
@@ -31,16 +32,16 @@ public class RatingController {
     public List<RestaurantRatingResponse> getRestaurantTags(@AuthenticationPrincipal OAuth2User principal,
                                                             @PathVariable String restaurantUsername) {
 
-        authenticate.isUserAuthenticated(principal);
-        return restaurantRatingService.getRestaurantTags(OauthHelper.getId(principal), restaurantUsername);
+        User user = authenticate.isUserAuthenticated(principal);
+        return restaurantRatingService.getRestaurantTags(user, restaurantUsername);
     }
 
     @PostMapping
     public ResponseEntity<Void> leaveRating(@AuthenticationPrincipal OAuth2User principal,
                                             @RequestBody RatingRequest ratingRequest) {
 
-        authenticate.isUserAuthenticated(principal);
-        return userRatingService.leaveRating(OauthHelper.getId(principal), ratingRequest);
+        User user = authenticate.isUserAuthenticated(principal);
+        return userRatingService.leaveRating(user, ratingRequest);
     }
 
 }

@@ -37,11 +37,9 @@ public class FavoritesService {
 
 
     @Transactional
-    public void addFavorite(String userId, UserFavorite userFavorite) {
+    public void addFavorite(User user, UserFavorite userFavorite) {
 
-        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("User not found"));
         Restaurant restaurant = restaurantRepository.findByUsername(userFavorite.getRestaurantUsername()).orElseThrow(()-> new NotFoundException("Restaurant not found"));
-
         boolean favoriteExists = favoritesRepository.existsByUserAndRestaurant(user, restaurant);
 
         if (userFavorite.isFavorite() && !favoriteExists) {
@@ -61,14 +59,12 @@ public class FavoritesService {
     }
 
 
-    public List<RestaurantThumbnail> getFavoritesById(String userId, int page) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    public List<RestaurantThumbnail> getFavoritesById(User user, int page) {
         return getFavorites(user, page);
     }
 
     public List<RestaurantThumbnail> getFavoritesByUsername(String username, int page) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
-
         return getFavorites(user, page);
     }
 

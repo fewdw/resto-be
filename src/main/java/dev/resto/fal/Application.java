@@ -24,7 +24,9 @@ private TagRepository tagRepository;
 	public ApplicationRunner addTagsRunner() {
 		return args -> {
 
-			if(tagRepository.existsByName("Cozy")) return;
+			if (tagRepository.count() > 0) {
+				return;
+			}
 
 			tagRepository.save(new Tag("Cozy", TagType.AMBIANCE, "😌"));
 			tagRepository.save(new Tag("Romantic", TagType.AMBIANCE, "❤️"));
