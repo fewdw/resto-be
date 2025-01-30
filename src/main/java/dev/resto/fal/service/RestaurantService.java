@@ -211,4 +211,9 @@ public class RestaurantService {
         return favoritesRepository.existsByUserAndRestaurant(user, restaurant);
     }
 
+    public Pagination newAndPopularPagination() {
+        double count = restaurantRepository.count();
+        double pages = Math.ceil(count / RESTAURANTS_PER_PAGE);
+        return new Pagination((int)pages);
+    }
 }

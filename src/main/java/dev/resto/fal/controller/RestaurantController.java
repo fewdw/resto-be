@@ -66,6 +66,12 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantThumbnails);
     }
 
+    @GetMapping("/pagination")
+    public ResponseEntity<Pagination> getNewThumbnailsPagination(@AuthenticationPrincipal OAuth2User principal) {
+        authenticate.isUserAuthenticated(principal);
+        return ResponseEntity.ok(restaurantService.newAndPopularPagination());
+    }
+
     @GetMapping("/popular/{page}")
     public ResponseEntity<List<RestaurantThumbnail>> getPopularThumbnails(@AuthenticationPrincipal OAuth2User principal,
                                                                           @PathVariable int page) {
